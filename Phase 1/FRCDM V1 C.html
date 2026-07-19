@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Malabar Table — Digital Menu V2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --coral: #FF6B4A;
+    --coral-dark: #E8552F;
+    --moss: #5C8A4E;
+    --teal: #1F8A8C;
+    --plum: #8B5A9E;
+    --mango: #F2A93B;
+    --ink: #231A15;
+    --gray: #8A8078;
+    --bg: #FAF8F5;
+    --card: #FFFFFF;
+    --line: #EFEAE3;
+    --radius: 18px;
+    --shadow: 0 8px 28px rgba(0,0,0,0.06);
+    --font: 'Inter', sans-serif;
+    --topbar-height: 70px;
+    --tabbar-height: 62px;
+  }
+  [data-theme="dark"] {
+    --ink: #F0EDEA;
+    --bg: #1A1816;
+    --card: #2A2724;
+    --line: #3D3935;
+    --gray: #B0A89F;
+    --shadow: 0 8px 28px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font); -webkit-font-smoothing:antialiased;
+    padding-bottom:var(--tabbar-height);
+    transition: background 0.3s, color 0.3s;
+  }
+  h1,h2,h3,.heading { font-family:'Poppins', sans-serif; font-weight:600; }
+  body.no-scroll { overflow:hidden; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; background:var(--card); position:sticky; top:0; z-index:30;
+    border-bottom:1px solid var(--line);
+    height: var(--topbar-height);
+  }
+  .brand { display:flex; align-items:center; gap:10px; cursor:pointer; transition:opacity 0.15s; }
+  .brand:active { opacity:0.6; }
+  .logo-mark {
+    width:38px; height:38px; border-radius:11px;
+    background:conic-gradient(from 90deg, var(--coral), var(--mango), var(--teal), var(--plum), var(--coral));
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .logo-mark::after { content:""; position:absolute; inset:5px; background:var(--card); border-radius:7px; }
+  .logo-mark .grid { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+  .logo-mark .grid span { width:6px; height:6px; border-radius:2px; }
+  .logo-mark .grid span:nth-child(1){background:var(--coral);}
+  .logo-mark .grid span:nth-child(2){background:var(--mango);}
+  .logo-mark .grid span:nth-child(3){background:var(--teal);}
+  .logo-mark .grid span:nth-child(4){background:var(--plum);}
+  .brand-text .name { font-size:14px; font-weight:700; line-height:1.15; }
+  .brand-text .sub { font-size:9.5px; letter-spacing:0.08em; color:var(--gray); text-transform:uppercase; font-weight:600; }
+  .icon-row { display:flex; align-items:center; gap:8px; }
+  .icon-btn {
+    width:38px; height:38px; border-radius:50%; background:#F4F1EC; border:none;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative;
+    font-size:16px; font-weight:600; color:var(--ink);
+    transition: background 0.2s;
+  }
+  .icon-btn:hover { background:var(--line); }
+  .icon-btn .dot {
+    position:absolute; top:6px; right:7px; width:7px; height:7px; border-radius:50%; background:var(--coral); border:1.5px solid var(--card);
+  }
+  .icon-btn .badge {
+    position:absolute; top:-4px; right:-4px; min-width:18px; height:18px; padding:0 4px; border-radius:9px;
+    background:var(--coral); color:#fff; font-size:10px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; border:2px solid var(--card);
+  }
+  .icon-btn .badge.hidden { display:none; }
+  .profile-avatar-btn { background:var(--coral); color:#fff; font-size:16px; font-weight:700; }
+
+  .wrap { max-width:520px; margin:0 auto; padding:0 16px; }
+
+  /* ---------- Hero carousel ---------- */
+  .hero-carousel { margin-top:16px; border-radius:20px; overflow:hidden; position:relative; height:190px; }
+  .hero-slide { width:100%; height:100%; display:none; position:relative; }
+  .hero-slide.active { display:block; }
+  .hero-slide img { width:100%; height:100%; object-fit:cover; display:block; }
+  .hero-scrim { position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(20,14,10,0.65) 100%); }
+  .hero-text { position:absolute; left:18px; bottom:16px; color:#fff; }
+  .hero-text .eyebrow { font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; opacity:0.85; font-weight:600; }
+  .hero-text h2 { margin:2px 0 0; font-size:20px; color:#fff; }
+  .hero-dots { position:absolute; right:16px; bottom:18px; display:flex; gap:5px; z-index:2; }
+  .hero-dots span { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.5); transition:all 0.3s; cursor:pointer; }
+  .hero-dots span.active { background:#fff; width:14px; border-radius:3px; }
+
+  /* ---------- Section headers ---------- */
+  .section-head { display:flex; align-items:baseline; justify-content:space-between; margin:26px 0 12px; }
+  .section-head h2 { font-size:18px; margin:0; }
+  .section-head .see-all { font-size:12px; color:var(--coral); font-weight:600; cursor:pointer; }
+
+  /* ---------- Offers Carousel ---------- */
+  .offers-scroll {
+    display:flex;
+    gap:14px;
+    overflow-x:auto;
+    padding:4px 2px 12px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .offers-scroll::-webkit-scrollbar { display:none; }
+  .offer-card-big {
+    flex:0 0 300px;
+    border-radius:20px;
+    padding:20px 18px;
+    position:relative;
+    overflow:hidden;
+    color:#fff;
+    min-height:140px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow:0 8px 24px rgba(0,0,0,0.10);
+  }
+  .offer-card-big .hot-badge {
+    position:absolute;
+    top:12px; right:12px;
+    background:rgba(255,255,255,0.25);
+    backdrop-filter:blur(4px);
+    padding:2px 12px;
+    border-radius:30px;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:#fff;
+    animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse { 0%{opacity:1;} 50%{opacity:0.5;} 100%{opacity:1;} }
+  .offer-card-big .discount-badge { font-size:32px; font-weight:900; line-height:1; font-family:'Poppins',sans-serif; }
+  .offer-card-big .offer-title { font-size:16px; font-weight:700; margin:6px 0 2px; }
+  .offer-card-big .offer-desc { font-size:12px; opacity:0.85; }
+  .offer-card-big .offer-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+  .offer-card-big .offer-footer .valid { font-size:11px; opacity:0.75; }
+  .offer-card-big .claim-btn {
+    background:rgba(255,255,255,0.25);
+    backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,0.4);
+    border-radius:40px;
+    padding:4px 18px;
+    font-size:12px;
+    font-weight:700;
+    color:#fff;
+    cursor:pointer;
+    transition:0.2s;
+    font-family:'Inter',sans-serif;
+  }
+  .offer-card-big .claim-btn:hover { background:rgba(255,255,255,0.4); }
+  .offer-grad-1 { background:linear-gradient(135deg,#FF6B4A,#E8552F); }
+  .offer-grad-2 { background:linear-gradient(135deg,#F2A93B,#E8871E); }
+  .offer-grad-3 { background:linear-gradient(135deg,#1F8A8C,#0F6A6C); }
+  .offer-grad-4 { background:linear-gradient(135deg,#8B5A9E,#6A3D7C); }
+  .offer-grad-5 { background:linear-gradient(135deg,#5C8A4E,#3A6A2E); }
+
+  /* ---------- Offers All Grid ---------- */
+  .offers-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    padding:4px 0;
+  }
+  .offers-grid .offer-card-sm {
+    border-radius:16px;
+    padding:16px 14px;
+    color:#fff;
+    position:relative;
+    min-height:120px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  }
+  .offers-grid .offer-card-sm .discount { font-size:24px; font-weight:900; font-family:'Poppins',sans-serif; }
+  .offers-grid .offer-card-sm .name { font-size:13px; font-weight:700; margin:4px 0 2px; }
+  .offers-grid .offer-card-sm .valid { font-size:10px; opacity:0.75; }
+  .offers-grid .offer-card-sm .claim-btn-sm {
+    background:rgba(255,255,255,0.2);
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:40px;
+    padding:2px 12px;
+    font-size:10px;
+    font-weight:700;
+    color:#fff;
+    cursor:pointer;
+    align-self:flex-start;
+    margin-top:6px;
+    font-family:'Inter',sans-serif;
+  }
+  .offers-grid .offer-card-sm .claim-btn-sm:hover { background:rgba(255,255,255,0.35); }
+
+  /* ---------- Bento category grid ---------- */
+  .bento { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .bento-tile {
+    position:relative; border-radius:16px; overflow:hidden; height:118px; cursor:pointer;
+    border:2px solid transparent;
+  }
+  .bento-tile.active { border-color:var(--coral); }
+  .bento-tile img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s; }
+  .bento-tile:active img { transform:scale(1.05); }
+  .bento-scrim { position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(15,10,8,0.72) 100%); }
+  .bento-chip {
+    position:absolute; left:10px; bottom:10px; color:#fff; font-weight:700; font-size:13.5px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .bento-chip .swatch { width:7px; height:7px; border-radius:2px; }
+  .bento-count { position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.92); color:var(--ink); font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px; }
+
+  /* ---------- Bestsellers row ---------- */
+  .bestseller-row { display:flex; gap:14px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none; }
+  .bestseller-row::-webkit-scrollbar { display:none; }
+  .best-card { flex:0 0 auto; width:104px; text-align:center; cursor:pointer; }
+  .best-photo { width:104px; height:104px; border-radius:50%; overflow:hidden; position:relative; border:3px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,0.08); }
+  .best-photo img { width:100%; height:100%; object-fit:cover; }
+  .best-add {
+    position:absolute; bottom:2px; right:2px; width:26px; height:26px; border-radius:50%;
+    background:var(--coral); color:#fff; border:2px solid #fff; font-size:15px; display:flex; align-items:center; justify-content:center;
+  }
+  .best-name { font-size:12px; font-weight:600; margin-top:8px; line-height:1.3; }
+  .best-price { font-size:11.5px; color:var(--gray); margin-top:1px; font-weight:500; }
+
+  /* ---------- Item cards ---------- */
+  .item-grid { display:flex; flex-direction:column; gap:12px; }
+  .item-card {
+    display:flex; gap:12px; background:var(--card); border-radius:16px; padding:10px; border:1px solid var(--line);
+    cursor:pointer; transition:transform 0.15s;
+  }
+  .item-card:active { transform:scale(0.98); }
+  .item-photo { width:80px; height:80px; border-radius:12px; overflow:hidden; flex-shrink:0; position:relative; }
+  .item-photo img { width:100%; height:100%; object-fit:cover; }
+  .veg-tag {
+    position:absolute; top:5px; left:5px; width:14px; height:14px; border-radius:4px; background:rgba(255,255,255,0.9);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .veg-dot-i { width:7px; height:7px; border-radius:50%; }
+  .item-body { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+  .item-name { font-size:14.5px; font-weight:700; }
+  .item-desc { font-size:11.5px; color:var(--gray); margin:2px 0 6px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .item-bottom { display:flex; align-items:center; justify-content:space-between; }
+  .item-price { font-size:14px; font-weight:700; color:var(--ink); }
+  .add-pill {
+    display:flex; align-items:center; gap:6px; background:#FFF1EC; color:var(--coral-dark);
+    border:none; border-radius:20px; padding:6px 12px; font-weight:700; font-size:12px; cursor:pointer;
+  }
+
+  .category-label { display:flex; align-items:center; gap:8px; margin:22px 0 10px; }
+  .category-label .swatch { width:9px; height:9px; border-radius:3px; }
+  .category-label h3 { margin:0; font-size:15.5px; }
+
+  /* ---------- Search bar ---------- */
+  .search-wrap { margin:12px 0 10px; position:relative; }
+  .search-wrap input {
+    width:100%; padding:10px 16px; border:1.5px solid var(--line); border-radius:50px;
+    font-family:'Inter'; font-size:14px; background:var(--card); outline:none; color:var(--ink);
+    padding-right:40px;
+  }
+  .search-wrap input:focus { border-color:var(--coral); }
+  .search-wrap .clear-search {
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    background:none; border:none; font-size:18px; color:var(--gray); cursor:pointer; display:none;
+  }
+  .no-results { text-align:center; padding:40px 0; color:var(--gray); font-size:14px; }
+
+  /* ---------- Bottom tab bar ---------- */
+  .tabbar {
+    position:fixed; left:0; right:0; bottom:0; background:var(--card);
+    border-top:1px solid var(--line); display:flex; z-index:40;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    height: var(--tabbar-height);
+  }
+  .tab-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; position:relative; padding:4px 0; }
+  .tab-item .ic { font-size:18px; }
+  .tab-item .lb { font-size:9.5px; font-weight:600; color:var(--gray); }
+  .tab-item.active .ic, .tab-item.active .lb { color:var(--coral); }
+  .tab-badge {
+    position:absolute; top:-2px; right:22%; background:var(--coral); color:#fff; font-size:9px; font-weight:700;
+    min-width:15px; height:15px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px;
+  }
+
+  /* ---------- Sheets ---------- */
+  .sheet-overlay { position:fixed; inset:0; background:rgba(20,14,10,0.5); display:none; z-index:50; }
+  .sheet-overlay.show { display:block; }
+  .sheet {
+    position:fixed; left:0; right:0; bottom:0; max-width:520px; margin:0 auto;
+    background:var(--card); border-radius:22px 22px 0 0; z-index:51;
+    transform:translateY(100%); transition:transform 0.28s ease;
+    max-height: 90vh; /* slightly less than full viewport */
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .sheet.show { transform:translateY(0); }
+  .sheet-handle { width:36px; height:4px; background:var(--line); border-radius:3px; margin:10px auto 0; flex-shrink:0; }
+  .sheet-head {
+    padding:14px 20px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .sheet-head h2 { font-size:17px; margin:0; }
+  .sheet-close { background:#F4F1EC; border:none; width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; color:var(--gray); }
+
+  /* CRITICAL: scrollable body with fixed height */
+  .sheet-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 20px 10px;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--coral) var(--line);
+    /* height will be set by JavaScript to ensure scroll works */
+  }
+  .sheet-body::-webkit-scrollbar { width: 4px; }
+  .sheet-body::-webkit-scrollbar-track { background: var(--line); border-radius: 4px; }
+  .sheet-body::-webkit-scrollbar-thumb { background: var(--coral); border-radius: 4px; }
+
+  .sheet-foot {
+    padding:14px 20px calc(18px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+    background:var(--card);
+    border-radius: 0 0 22px 22px;
+  }
+
+  /* Cart lines etc. */
+  .cart-line { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .cart-line img { width:52px; height:52px; border-radius:10px; object-fit:cover; }
+  .cart-line-name { font-size:13.5px; font-weight:700; }
+  .cart-line-price { font-size:11.5px; color:var(--gray); margin-top:1px; }
+  .stepper { display:flex; align-items:center; gap:9px; background:#F4F1EC; border-radius:20px; padding:4px 6px; }
+  .stepper button { width:22px; height:22px; border-radius:50%; border:none; background:var(--coral); color:#fff; font-size:13px; cursor:pointer; }
+  .stepper span { font-size:12.5px; font-weight:700; min-width:12px; text-align:center; }
+  .line-total { font-size:13px; font-weight:700; min-width:52px; text-align:right; }
+  .sheet-empty { padding:50px 0; text-align:center; color:var(--gray); font-size:13px; }
+
+  /* Detail sheet */
+  .detail-img { width:100%; height:180px; border-radius:16px; overflow:hidden; margin-bottom:16px; }
+  .detail-img img { width:100%; height:100%; object-fit:cover; }
+  .detail-title { font-size:18px; font-weight:700; margin:0 0 4px; }
+  .detail-desc { font-size:13.5px; color:var(--gray); margin-bottom:12px; }
+  .detail-price { font-size:20px; font-weight:700; color:var(--coral-dark); }
+  .variant-group { margin:16px 0 12px; }
+  .variant-group .label { font-size:12px; font-weight:600; color:var(--gray); text-transform:uppercase; letter-spacing:0.03em; margin-bottom:6px; display:block; }
+  .variant-pills { display:flex; gap:8px; flex-wrap:wrap; }
+  .variant-pill { padding:6px 14px; border-radius:40px; border:1.5px solid var(--line); font-size:13px; font-weight:600; cursor:pointer; background:var(--card); color:var(--ink); }
+  .variant-pill.active { border-color:var(--coral); background:#FFF1EC; color:var(--coral-dark); }
+  .addon-item { display:flex; align-items:center; gap:10px; padding:6px 0; }
+  .addon-item input[type="checkbox"] { width:16px; height:16px; accent-color:var(--coral); }
+  .addon-item span { font-size:13px; }
+  .favourite-toggle { background:transparent; border:none; font-size:24px; cursor:pointer; color:var(--gray); transition:color 0.2s; }
+  .favourite-toggle.active { color:var(--coral); }
+
+  /* Checkout */
+  .total-row { display:flex; justify-content:space-between; font-size:13.5px; color:var(--gray); margin-bottom:4px; }
+  .total-row.grand { font-size:16px; font-weight:700; color:var(--ink); margin-bottom:14px; }
+  .cta {
+    width:100%; padding:15px; border:none; border-radius:14px; cursor:pointer;
+    background:linear-gradient(90deg, var(--coral), var(--coral-dark)); color:#fff;
+    font-family:'Poppins', sans-serif; font-weight:600; font-size:14.5px;
+    display:flex; align-items:center; justify-content:space-between; padding-left:20px; padding-right:20px;
+  }
+  .cta:disabled { opacity:0.35; cursor:default; }
+  .form-field { margin-bottom:14px; }
+  .form-field label { display:block; font-size:11.5px; font-weight:700; color:var(--gray); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.03em; }
+  .form-field input, .form-field textarea, .form-field select {
+    width:100%; padding:10px 14px; border:1.5px solid var(--line); border-radius:12px; font-family:'Inter'; font-size:13.5px; background:var(--bg); color:var(--ink);
+  }
+  .form-field textarea { resize:none; height:58px; }
+  .fulfil-toggle { display:flex; gap:8px; margin-bottom:16px; }
+  .fulfil-opt { flex:1; text-align:center; padding:11px; border-radius:12px; border:1.5px solid var(--line); font-size:12.5px; font-weight:700; cursor:pointer; color:var(--gray); }
+  .fulfil-opt.active { background:var(--ink); border-color:var(--ink); color:var(--bg); }
+
+  /* Confirm & Track */
+  .confirm-box { text-align:center; padding:30px 10px 10px; }
+  .confirm-icon { width:60px; height:60px; border-radius:50%; background:var(--moss); color:#fff; font-size:26px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  .confirm-box h2 { margin:0 0 6px; }
+  .confirm-box p { font-size:13px; color:var(--gray); margin:0 0 3px; line-height:1.6; }
+  .order-chip { display:inline-block; margin-top:10px; background:#F4F1EC; padding:7px 16px; border-radius:10px; font-weight:700; font-size:14px; }
+  .wa-cta {
+    margin-top:20px; width:100%; padding:15px; border-radius:14px; border:none; background:#25D366; color:#fff;
+    font-family:'Poppins'; font-weight:600; font-size:14px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+
+  /* Tracking progress */
+  .progress-steps { display:flex; justify-content:space-between; margin:24px 0; position:relative; }
+  .progress-steps::before { content:''; height:4px; background:#eee; position:absolute; top:18px; left:10%; right:10%; z-index:0; }
+  .step { display:flex; flex-direction:column; align-items:center; z-index:1; gap:4px; }
+  .step .circle { width:36px; height:36px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#aaa; }
+  .step.active .circle { background:var(--coral); color:#fff; }
+  .step.done .circle { background:var(--teal); color:#fff; }
+  .step span { font-size:11px; color:#888; font-weight:500; }
+  .step.active span { color:var(--ink); font-weight:600; }
+
+  /* ---------- Favourites, Notifications, Profile, Contact, QR ---------- */
+  .fav-item, .notif-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .fav-item img { width:48px; height:48px; border-radius:10px; object-fit:cover; }
+  .fav-item .info { flex:1; }
+  .fav-item .info .name { font-weight:600; font-size:14px; }
+  .fav-item .info .price { color:var(--gray); font-size:13px; }
+  .fav-item .fav-remove { background:none; border:none; color:var(--coral); font-size:18px; cursor:pointer; }
+  .notif-item .icon { font-size:24px; width:36px; text-align:center; }
+  .notif-item .msg { flex:1; font-size:13px; line-height:1.4; }
+  .notif-item .time { font-size:11px; color:var(--gray); }
+
+  .profile-menu { display:flex; flex-direction:column; gap:4px; }
+  .profile-menu .pm-item {
+    display:flex; align-items:center; gap:14px; padding:14px 12px;
+    border-radius:14px; cursor:pointer; transition:background 0.15s;
+  }
+  .profile-menu .pm-item:hover { background:#F4F1EC; }
+  .profile-menu .pm-item .pm-icon { font-size:20px; width:28px; text-align:center; color:var(--gray); }
+  .profile-menu .pm-item .pm-label { font-weight:500; font-size:14px; flex:1; }
+  .profile-menu .pm-item .pm-arrow { color:var(--gray); font-size:14px; }
+
+  .contact-info { margin:16px 0; }
+  .contact-info .ci-row { display:flex; align-items:center; gap:10px; padding:8px 0; }
+  .contact-info .ci-row i { width:20px; color:var(--coral); font-style:normal; }
+  .contact-info .ci-row span { font-size:13.5px; }
+  .map-placeholder { background:#ddd; border-radius:14px; height:120px; display:flex; align-items:center; justify-content:center; color:var(--gray); font-size:14px; margin:12px 0; }
+
+  .qr-landing { text-align:center; padding:40px 20px; }
+  .qr-landing .qr-icon { font-size:72px; margin-bottom:16px; }
+  .qr-landing h2 { margin:0 0 6px; }
+  .qr-landing p { color:var(--gray); font-size:14px; margin-bottom:24px; }
+
+  /* ---------- Restaurant Showcase ---------- */
+  .showcase-cover { width:100%; height:180px; border-radius:16px; overflow:hidden; margin-bottom:16px; position:relative; }
+  .showcase-cover img { width:100%; height:100%; object-fit:cover; }
+  .showcase-cover .badge-top { position:absolute; top:12px; left:12px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); color:#fff; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:600; }
+  .showcase-name { font-size:22px; font-weight:700; margin:0 0 2px; }
+  .showcase-cuisine { font-size:14px; color:var(--gray); margin-bottom:4px; }
+  .showcase-rating { display:flex; align-items:center; gap:6px; font-size:14px; font-weight:600; color:var(--ink); }
+  .showcase-rating .stars { color:#F2A93B; letter-spacing:1px; }
+  .showcase-desc { font-size:14px; line-height:1.6; color:var(--gray); margin:14px 0 10px; padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .showcase-highlights { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 10px; }
+  .showcase-highlights .chip { background:#F4F1EC; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; color:var(--ink); }
+  .showcase-details { display:flex; flex-direction:column; gap:6px; margin:12px 0 14px; }
+  .showcase-details .row { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--gray); }
+  .showcase-details .row i { width:20px; color:var(--coral); font-style:normal; font-size:16px; }
+  .showcase-actions { display:flex; gap:10px; margin-top:6px; }
+  .showcase-actions .btn-outline { flex:1; background:transparent; border:1.5px solid var(--line); border-radius:14px; padding:12px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; color:var(--ink); }
+  .showcase-actions .btn-primary { flex:1; background:var(--coral); border:none; border-radius:14px; padding:12px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; color:#fff; }
+
+  /* ---------- Bestseller grid (See All) ---------- */
+  .bestseller-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; padding:6px 0; }
+  .bestseller-grid .best-item { text-align:center; cursor:pointer; position:relative; }
+  .bestseller-grid .best-item img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,0.08); }
+  .bestseller-grid .best-item .add-circle {
+    position:absolute; bottom:4px; right:4px; width:26px; height:26px; border-radius:50%;
+    background:var(--coral); color:#fff; border:2px solid #fff; font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .bestseller-grid .best-item .name { font-size:12px; font-weight:600; margin-top:6px; line-height:1.2; }
+  .bestseller-grid .best-item .price { font-size:11px; color:var(--gray); font-weight:500; }
+
+  /* ---------- Menu All ---------- */
+  .menu-all-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .menu-all-item img { width:48px; height:48px; border-radius:10px; object-fit:cover; }
+  .menu-all-item .info { flex:1; }
+  .menu-all-item .info .name { font-size:14px; font-weight:600; }
+  .menu-all-item .info .cat-tag { font-size:10px; color:var(--gray); background:#F4F1EC; padding:2px 8px; border-radius:20px; display:inline-block; margin-top:2px; }
+  .menu-all-item .price-add { display:flex; align-items:center; gap:8px; }
+  .menu-all-item .price-add .price { font-weight:700; font-size:14px; }
+  .menu-all-item .price-add .add-btn { background:var(--coral); color:#fff; border:none; border-radius:40px; padding:2px 12px; font-weight:600; cursor:pointer; }
+
+  /* ---------- Table Booking ---------- */
+  .table-select-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:12px 0; }
+  .table-option {
+    padding:10px; border:1.5px solid var(--line); border-radius:10px;
+    text-align:center; cursor:pointer; font-weight:600; font-size:14px;
+    transition:0.15s; background:var(--bg);
+  }
+  .table-option.selected { border-color:var(--coral); background:#FFF1EC; color:var(--coral-dark); }
+  .table-option.reserved { opacity:0.4; cursor:not-allowed; }
+
+  /* ---------- Review stars ---------- */
+  .star-rating { display:flex; gap:4px; font-size:24px; cursor:pointer; }
+  .star-rating .star { color:var(--gray); transition:0.15s; }
+  .star-rating .star.active { color:#F2A93B; }
+
+  /* ---------- Address Card ---------- */
+  .address-card {
+    background:var(--bg); border-radius:12px; padding:12px 16px;
+    border:1px solid var(--line); margin-bottom:10px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .address-card .actions button { background:none; border:none; cursor:pointer; color:var(--gray); font-size:14px; margin-left:8px; }
+  .address-card .actions button:hover { color:var(--coral); }
+
+  /* ---------- Loyalty Badge ---------- */
+  .tier-badge {
+    display:inline-block; padding:2px 12px; border-radius:30px;
+    font-size:12px; font-weight:700; background:var(--coral); color:#fff;
+  }
+  .tier-badge.gold { background: #F2A93B; color:#1E1E1E; }
+  .tier-badge.silver { background: #C0C0C0; color:#1E1E1E; }
+  .tier-badge.bronze { background: #CD7F32; color:#fff; }
+
+  /* ---------- Dark mode toggle ---------- */
+  .toggle-switch {
+    position:relative; width:50px; height:26px; background:var(--line); border-radius:13px;
+    cursor:pointer; transition:0.3s; display:inline-block;
+  }
+  .toggle-switch::after {
+    content:''; position:absolute; top:2px; left:2px; width:22px; height:22px;
+    background:#fff; border-radius:50%; transition:0.3s; box-shadow:0 2px 4px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.active { background:var(--coral); }
+  .toggle-switch.active::after { left:26px; }
+
+  /* ---------- Language selector ---------- */
+  .lang-select { background:var(--bg); border:1px solid var(--line); border-radius:30px; padding:4px 12px; font-size:12px; font-weight:600; color:var(--ink); cursor:pointer; }
+
+  /* ---------- Fix scroll anchoring ---------- */
+  #menuAnchor { scroll-margin-top: calc(var(--topbar-height) + 10px); }
+  .category-section { scroll-margin-top: calc(var(--topbar-height) + 10px); }
+
+  @media (max-width:420px) {
+    .bestseller-grid { grid-template-columns:1fr 1fr; gap:12px; }
+    .offers-grid { grid-template-columns:1fr; }
+    .offer-card-big { flex:0 0 260px; }
+  }
+</style>
+</head>
+<body>
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  <div class="brand" onclick="openSheet('restaurant')">
+    <div class="logo-mark"><div class="grid"><span></span><span></span><span></span><span></span></div></div>
+    <div class="brand-text">
+      <div class="name">Malabar Table</div>
+      <div class="sub">Digital Menu</div>
+    </div>
+  </div>
+  <div class="icon-row">
+    <button class="icon-btn" onclick="toggleLang()" title="Language">🌐</button>
+    <button class="icon-btn" onclick="openSheet('favourites')" id="favIcon">♡</button>
+    <button class="icon-btn" onclick="openSheet('notifications')">🔔<span class="dot" id="notifDot"></span></button>
+    <button class="icon-btn profile-avatar-btn" id="profileHeaderBtn" onclick="openSheet('profile')">A</button>
+    <button class="icon-btn" onclick="openSheet('cart')">🛍<span class="badge hidden" id="topBadge">0</span></button>
+  </div>
+</div>
+
+<div class="wrap" id="homeSection">
+  <!-- Hero Carousel -->
+  <div class="hero-carousel" id="heroCarousel">
+    <div class="hero-slide active" data-index="0">
+      <img src="https://picsum.photos/seed/onamsadya/900/500" alt="Onam Sadya">
+      <div class="hero-scrim"></div>
+      <div class="hero-text">
+        <div class="eyebrow">Chef's pick this week</div>
+        <h2>Onam Sadya, served daily till 3pm</h2>
+      </div>
+    </div>
+    <div class="hero-slide" data-index="1">
+      <img src="https://picsum.photos/seed/seafoodplatter/900/500" alt="Seafood Platter">
+      <div class="hero-scrim"></div>
+      <div class="hero-text">
+        <div class="eyebrow">Today's catch</div>
+        <h2>Fresh Seafood Platter — just ₹499</h2>
+      </div>
+    </div>
+    <div class="hero-slide" data-index="2">
+      <img src="https://picsum.photos/seed/dessert/900/500" alt="Dessert">
+      <div class="hero-scrim"></div>
+      <div class="hero-text">
+        <div class="eyebrow">Sweet tooth</div>
+        <h2>Try our Palada Pradhaman this weekend</h2>
+      </div>
+    </div>
+    <div class="hero-dots" id="heroDots">
+      <span class="active" data-index="0"></span>
+      <span data-index="1"></span>
+      <span data-index="2"></span>
+    </div>
+  </div>
+
+  <!-- Offers Carousel -->
+  <div class="section-head">
+    <h2>🔥 Hot Offers</h2>
+    <span class="see-all" onclick="openSheet('offers')">View All</span>
+  </div>
+  <div class="offers-scroll" id="offersCarousel"></div>
+
+  <!-- Menu -->
+  <div class="section-head">
+    <h2>Menu</h2>
+    <span class="see-all" onclick="openSheet('menuall')">See All</span>
+  </div>
+  <div class="bento" id="bentoGrid"></div>
+
+  <!-- Bestsellers -->
+  <div class="section-head">
+    <h2>Bestsellers</h2>
+    <span class="see-all" onclick="openSheet('bestsellers')">See All</span>
+  </div>
+  <div class="bestseller-row" id="bestRow"></div>
+
+  <div id="categorySections"></div>
+</div>
+
+<!-- Hidden anchor for menu tab scroll -->
+<div id="menuAnchor" style="scroll-margin-top: calc(var(--topbar-height) + 10px);"></div>
+
+<!-- ===== BOTTOM TAB BAR ===== -->
+<div class="tabbar">
+  <div class="tab-item active" onclick="setTab(this); goHome()">
+    <span class="ic">⌂</span><span class="lb">Home</span>
+  </div>
+  <div class="tab-item" onclick="setTab(this); goToMenu()">
+    <span class="ic">▤</span><span class="lb">Menu</span>
+  </div>
+  <div class="tab-item" onclick="setTab(this); openSheet('cart')">
+    <span class="ic">🛍</span><span class="lb">My Order</span>
+    <span class="tab-badge hidden" id="tabBadge">0</span>
+  </div>
+  <div class="tab-item" onclick="setTab(this); openSheet('contact')">
+    <span class="ic">☎</span><span class="lb">Contact</span>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- GLOBAL SHEET -->
+<!-- ============================================================ -->
+<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div id="sheetContent">
+    <!-- Cart -->
+    <div id="cartView">
+      <div class="sheet-head"><h2>My Order</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="cartLines"></div>
+      <div class="sheet-foot">
+        <div class="total-row"><span>Subtotal</span><span id="subtotalVal">₹0</span></div>
+        <div class="total-row" id="discountRow" style="display:none;"><span>Discount</span><span id="discountVal">-₹0</span></div>
+        <div class="total-row grand"><span>Total</span><span id="totalVal">₹0</span></div>
+        <button class="cta" id="checkoutBtn" onclick="showCheckout()" disabled><span>Proceed</span><span id="ctaTotal">₹0</span></button>
+      </div>
+    </div>
+
+    <!-- Checkout -->
+    <div id="checkoutView" style="display:none;">
+      <div class="sheet-head"><h2>Your details</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="fulfil-toggle">
+          <div class="fulfil-opt active" id="optDelivery" onclick="setFulfil('delivery')">🛵 Delivery</div>
+          <div class="fulfil-opt" id="optPickup" onclick="setFulfil('pickup')">🏠 Pickup</div>
+        </div>
+        <div class="form-field"><label>Your name</label><input id="custName" placeholder="Anjali Nair"></div>
+        <div class="form-field"><label>Phone number</label><input id="custPhone" placeholder="98470 12345"></div>
+        <div class="form-field" id="addressField"><label>Delivery address</label><textarea id="custAddress" placeholder="House name, street, landmark"></textarea></div>
+        <div class="form-field">
+          <label>Coupon Code</label>
+          <div style="display:flex; gap:8px;">
+            <input id="couponInput" placeholder="Enter coupon code" style="flex:1;">
+            <button class="btn-primary" onclick="applyCoupon()" style="padding:10px 20px;">Apply</button>
+          </div>
+          <div id="couponMessage" style="font-size:12px; margin-top:4px;"></div>
+        </div>
+      </div>
+      <div class="sheet-foot">
+        <div class="total-row"><span>Subtotal</span><span id="checkSubtotal">₹0</span></div>
+        <div class="total-row" id="checkDiscountRow" style="display:none;"><span>Discount</span><span id="checkDiscountVal">-₹0</span></div>
+        <div class="total-row grand"><span>Total</span><span id="checkoutTotal">₹0</span></div>
+        <button class="cta" onclick="placeOrder()"><span>Place order</span><span>→</span></button>
+      </div>
+    </div>
+
+    <!-- Confirm -->
+    <div id="confirmView" style="display:none;">
+      <div class="sheet-head"><span></span><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="confirm-box">
+        <div class="confirm-icon">✓</div>
+        <h2>Order sent!</h2>
+        <p>Logged into the kitchen queue.</p>
+        <p>Confirm on WhatsApp so we can start cooking.</p>
+        <div class="order-chip" id="orderNo">ORD-2607-0001</div>
+        <a class="wa-cta" id="waLink" href="#" target="_blank">Confirm on WhatsApp</a>
+        <button class="cta" style="margin-top:12px;background:var(--teal);" onclick="showTracking()">Track order</button>
+      </div>
+    </div>
+
+    <!-- Tracking -->
+    <div id="trackView" style="display:none;">
+      <div class="sheet-head"><h2>Order #<span id="trackOrderId">1234</span></h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div style="background:var(--card);border-radius:16px;padding:20px;border:1px solid var(--line);text-align:center;">
+          <div style="font-size:40px;">⏳</div>
+          <h3 style="font-weight:700;">Preparing your order</h3>
+          <p style="color:var(--gray);font-size:14px;">Estimated: 25–30 min</p>
+          <div class="progress-steps" id="trackSteps">
+            <div class="step done"><div class="circle">✓</div><span>Received</span></div>
+            <div class="step active"><div class="circle">2</div><span>Preparing</span></div>
+            <div class="step"><div class="circle">3</div><span>Ready</span></div>
+            <div class="step"><div class="circle">4</div><span>Delivered</span></div>
+          </div>
+          <button style="background:#25D366;color:#fff;border:none;padding:12px 24px;border-radius:50px;font-weight:600;margin:12px 0;font-family:Inter;cursor:pointer;">Track on WhatsApp</button>
+          <br/>
+          <button class="btn-secondary" style="color:#C1432D; border-color:#C1432D;" onclick="cancelOrder()">Cancel Order</button>
+        </div>
+        <div style="margin-top:16px;background:var(--card);border-radius:16px;padding:14px;border:1px solid var(--line);">
+          <div id="trackSummary"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail View (scrollable) -->
+    <div id="detailView" style="display:none;">
+      <div class="sheet-head">
+        <h2 id="detailTitle">Product</h2>
+        <div>
+          <button class="favourite-toggle" id="detailFavBtn" onclick="toggleFavourite(currentDetailItem?.id)">♡</button>
+          <button class="sheet-close" onclick="closeSheet()">&times;</button>
+        </div>
+      </div>
+      <div class="sheet-body" id="detailBody">
+        <div class="detail-img"><img id="detailImg" src="" alt=""></div>
+        <div class="detail-title" id="detailName">Product Name</div>
+        <div class="detail-desc" id="detailDesc">Description</div>
+        <div class="detail-price" id="detailPrice">₹0</div>
+
+        <!-- Reviews (20+ to force scroll) -->
+        <div id="productReviews" style="margin:12px 0;"></div>
+
+        <div class="variant-group">
+          <span class="label">Size</span>
+          <div class="variant-pills" id="variantPills">
+            <span class="variant-pill active" data-variant="small">Small</span>
+            <span class="variant-pill" data-variant="medium">Medium</span>
+            <span class="variant-pill" data-variant="large">Large</span>
+          </div>
+        </div>
+        <div class="variant-group">
+          <span class="label">Add-ons</span>
+          <div id="addonsContainer">
+            <label class="addon-item"><input type="checkbox" value="extra-cheese"> Extra cheese (+₹30)</label>
+            <label class="addon-item"><input type="checkbox" value="spicy"> Spicy level (+₹10)</label>
+          </div>
+        </div>
+        <div class="flex" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;margin-top:6px;">
+          <div class="flex"><button onclick="changeDetailQty(-1)" style="border:1px solid #ddd;border-radius:40px;padding:6px 14px;background:var(--bg);color:var(--ink);">−</button><span style="font-weight:700;width:30px;text-align:center;" id="detailQty">1</span><button onclick="changeDetailQty(1)" style="border:1px solid #ddd;border-radius:40px;padding:6px 14px;background:var(--bg);color:var(--ink);">+</button></div>
+          <button class="cta" style="width:auto;padding:8px 24px;" onclick="addDetailToCart()">Add to Cart</button>
+        </div>
+        <button class="btn-secondary" style="width:100%;margin-top:12px;" onclick="openWriteReview()">✍️ Write a Review</button>
+      </div>
+    </div>
+
+    <!-- Favourites -->
+    <div id="favouritesView" style="display:none;">
+      <div class="sheet-head"><h2>Favourites</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="favList"></div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notificationsView" style="display:none;">
+      <div class="sheet-head"><h2>Notifications</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="notifList"></div>
+    </div>
+
+    <!-- Profile -->
+    <div id="profileView" style="display:none;">
+      <div class="sheet-head"><h2>Profile</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:16px;">
+          <div id="profileAvatar" style="width:56px;height:56px;border-radius:50%;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;">A</div>
+          <div><div id="profileFullName" style="font-weight:700;font-size:16px;">Anjali Nair</div>
+            <div style="color:var(--gray);font-size:13px;">anjali@email.com</div>
+            <div><span class="tier-badge gold">Gold</span> <span style="font-size:12px;color:var(--gray);">240 pts</span></div>
+          </div>
+        </div>
+        <div class="profile-menu">
+          <div class="pm-item" onclick="openSheet('orders')"><span class="pm-icon">📦</span><span class="pm-label">My Orders</span><span class="pm-arrow">›</span></div>
+          <div class="pm-item" onclick="openSheet('favourites')"><span class="pm-icon">♡</span><span class="pm-label">Favourites</span><span class="pm-arrow">›</span></div>
+          <div class="pm-item" onclick="openSheet('addresses')"><span class="pm-icon">📍</span><span class="pm-label">Addresses</span><span class="pm-arrow">›</span></div>
+          <div class="pm-item" onclick="openSheet('payments')"><span class="pm-icon">💳</span><span class="pm-label">Payment Methods</span><span class="pm-arrow">›</span></div>
+          <div class="pm-item" onclick="openSheet('contact')"><span class="pm-icon">☎</span><span class="pm-label">Contact</span><span class="pm-arrow">›</span></div>
+          <div class="pm-item" onclick="openSheet('settings')"><span class="pm-icon">⚙️</span><span class="pm-label">Settings</span><span class="pm-arrow">›</span></div>
+          <div class="pm-item" style="color:var(--coral);" onclick="alert('Logged out!')"><span class="pm-icon" style="color:var(--coral);">🚪</span><span class="pm-label">Logout</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div id="contactView" style="display:none;">
+      <div class="sheet-head"><h2>Contact Us</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="contact-info">
+          <div class="ci-row"><i>📞</i><span>+91 98470 12345</span></div>
+          <div class="ci-row"><i>📍</i><span>123, Main Street, Kochi, Kerala</span></div>
+          <div class="ci-row"><i>🕐</i><span>Mon–Sat: 10am – 10pm, Sun: 12pm – 8pm</span></div>
+        </div>
+        <div class="map-placeholder">🗺️ Open in Google Maps</div>
+        <div style="margin-top:16px;">
+          <div class="form-field"><label>Your name</label><input placeholder="Your name"></div>
+          <div class="form-field"><label>Message</label><textarea placeholder="Write your enquiry..."></textarea></div>
+          <button class="cta" style="background:var(--teal);" onclick="alert('Message sent!')">Send Message</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Landing -->
+    <div id="qrView" style="display:none;">
+      <div class="sheet-head"><h2>Welcome</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="qr-landing">
+          <div class="qr-icon">📱</div>
+          <h2>Malabar Table</h2>
+          <p>Table A-12 · Scan successful</p>
+          <button class="cta" style="background:var(--moss);max-width:200px;margin:0 auto;" onclick="closeSheet();goHome()">View Menu</button>
+          <div style="margin-top:16px;">
+            <button class="cta" style="background:var(--coral);max-width:200px;margin:0 auto;" onclick="openSheet('tableBooking')">Book a Table</button>
+          </div>
+          <div style="margin-top:16px;font-size:13px;color:var(--gray);">Call waiter: <strong>+91 98470 12345</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders History -->
+    <div id="ordersView" style="display:none;">
+      <div class="sheet-head"><h2>My Orders</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="ordersList"></div>
+    </div>
+
+    <!-- Addresses -->
+    <div id="addressesView" style="display:none;">
+      <div class="sheet-head"><h2>Addresses</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="addressesList"></div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div id="paymentsView" style="display:none;">
+      <div class="sheet-head"><h2>Payment Methods</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="paymentsList"></div>
+    </div>
+
+    <!-- Settings -->
+    <div id="settingsView" style="display:none;">
+      <div class="sheet-head"><h2>Settings</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="profile-menu">
+          <div class="pm-item" onclick="toggleDarkMode()">
+            <span class="pm-icon">🌙</span><span class="pm-label">Dark mode</span>
+            <div class="toggle-switch" id="darkToggle"></div>
+          </div>
+          <div class="pm-item">
+            <span class="pm-icon">🌐</span><span class="pm-label">Language</span>
+            <select class="lang-select" onchange="changeLang(this.value)">
+              <option value="en">English</option>
+              <option value="ml">മലയാളം</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restaurant Showcase -->
+    <div id="restaurantShowcaseView" style="display:none;">
+      <div class="sheet-head"><h2>About Malabar Table</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="showcase-cover">
+          <img src="https://picsum.photos/seed/restaurantcover/800/400" alt="Restaurant">
+          <span class="badge-top">⭐ 4.8 (1.2k reviews)</span>
+        </div>
+        <div class="showcase-name">Malabar Table</div>
+        <div class="showcase-cuisine">Kerala Cuisine · Seafood · Traditional</div>
+        <div class="showcase-rating"><span class="stars">★★★★★</span> 4.8 · 1,234 reviews</div>
+        <div class="showcase-desc"><strong>Our story</strong><br>Serving authentic Kerala flavours since 2015...</div>
+        <div class="showcase-highlights"><span class="chip">🍽️ Dine-in</span><span class="chip">🛵 Takeaway</span><span class="chip">📶 Free WiFi</span><span class="chip">🌿 Outdoor seating</span><span class="chip">♿ Wheelchair access</span></div>
+        <div class="showcase-details"><div class="row"><i>📞</i> <span>+91 98470 12345</span></div><div class="row"><i>📍</i> <span>123, Main Street, Kochi, Kerala 682001</span></div><div class="row"><i>🕐</i> <span>Mon–Sat: 10am – 10pm · Sun: 12pm – 8pm</span></div><div class="row"><i>🌐</i> <span>www.malabartable.com</span></div></div>
+        <div class="showcase-actions"><button class="btn-outline" onclick="alert('Calling...')">📞 Call</button><button class="btn-outline" onclick="alert('Directions...')">🗺️ Directions</button><button class="btn-primary" onclick="alert('Share')">📤 Share</button></div>
+      </div>
+    </div>
+
+    <!-- Bestsellers All -->
+    <div id="bestsellersView" style="display:none;">
+      <div class="sheet-head"><h2>All Bestsellers</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body"><div class="bestseller-grid" id="bestsellerGrid"></div></div>
+    </div>
+
+    <!-- Menu All -->
+    <div id="menuAllView" style="display:none;">
+      <div class="sheet-head"><h2>Full Menu</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body" id="menuAllList"></div>
+    </div>
+
+    <!-- Offers All -->
+    <div id="offersView" style="display:none;">
+      <div class="sheet-head"><h2>All Offers</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body"><div class="offers-grid" id="offersAllGrid"></div></div>
+    </div>
+
+    <!-- Table Booking -->
+    <div id="tableBookingView" style="display:none;">
+      <div class="sheet-head"><h2>Book a Table</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="form-field"><label>Date</label><input type="date" id="bookingDate" value="2026-07-20"></div>
+        <div class="form-field"><label>Time</label><input type="time" id="bookingTime" value="19:30"></div>
+        <div class="form-field"><label>Number of People</label><select id="bookingPeople"><option>2</option><option>4</option><option>6</option><option>8</option><option>10</option></select></div>
+        <div class="form-field"><label>Select Table</label>
+          <div class="table-select-grid" id="tableSelectGrid"></div>
+        </div>
+        <div class="form-field"><label>Special Requests</label><textarea id="bookingRequests" placeholder="Any special occasion?"></textarea></div>
+        <button class="cta" onclick="bookTable()">Confirm Booking</button>
+      </div>
+    </div>
+
+    <!-- Write Review -->
+    <div id="writeReviewView" style="display:none;">
+      <div class="sheet-head"><h2>Write a Review</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+      <div class="sheet-body">
+        <div class="form-field"><label>Rating</label>
+          <div class="star-rating" id="reviewStars">
+            <span class="star" data-val="1">☆</span>
+            <span class="star" data-val="2">☆</span>
+            <span class="star" data-val="3">☆</span>
+            <span class="star" data-val="4">☆</span>
+            <span class="star" data-val="5">☆</span>
+          </div>
+        </div>
+        <div class="form-field"><label>Review</label><textarea id="reviewText" placeholder="Share your experience..."></textarea></div>
+        <button class="cta" onclick="submitReview()">Submit Review</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+//  DATA
+// ================================================================
+const CATEGORIES = [
+  { key:'sadya', name:"Today's Sadya", color:'#F2A93B', img:'sadyatile' },
+  { key:'curries', name:'Curries & Fry', color:'#FF6B4A', img:'curriestile' },
+  { key:'breads', name:'Breads', color:'#5C8A4E', img:'breadstile' },
+  { key:'sweets', name:'Sweets & Chai', color:'#8B5A9E', img:'sweetstile' },
+  { key:'beverages', name:'Beverages', color:'#1F8A8C', img:'beveragestile' },
+  { key:'starters', name:'Starters & Snacks', color:'#E87A20', img:'starterstile' },
+];
+
+const ITEMS = [
+  { id:1, cat:'sadya', name:"Onam Sadya Thali", desc:"Rice, sambar, avial, thoran, pachadi, payasam", price:220, veg:true, best:true },
+  { id:2, cat:'sadya', name:"Curd Rice Bowl", desc:"Ginger and curry leaf tempering", price:90, veg:true },
+  { id:11, cat:'sadya', name:"Pulissery", desc:"Yogurt curry with mangoes", price:120, veg:true },
+  { id:12, cat:'sadya', name:"Pappadam", desc:"Crispy lentil wafers", price:15, veg:true },
+  { id:20, cat:'sadya', name:"Avial", desc:"Mixed vegetables in coconut", price:110, veg:true, best:true },
+  { id:3, cat:'curries', name:"Fish Moilee", desc:"Kingfish in coconut milk, curry leaves", price:260, veg:false, best:true },
+  { id:4, cat:'curries', name:"Beef Ularthiyathu", desc:"Slow-roasted with coconut slivers", price:240, veg:false, best:true },
+  { id:5, cat:'curries', name:"Kappa Puzhukku", desc:"Mashed tapioca, mustard tempering", price:110, veg:true },
+  { id:6, cat:'curries', name:"Prawn Roast", desc:"Kerala-style, dry roasted masala", price:280, veg:false },
+  { id:13, cat:'curries', name:"Chicken Curry", desc:"Kerala-style with coconut", price:200, veg:false, best:true },
+  { id:14, cat:'curries', name:"Vegetable Stew", desc:"Seasonal veggies in coconut milk", price:160, veg:true },
+  { id:19, cat:'curries', name:"Mutton Chops", desc:"Spicy fried mutton ribs", price:350, veg:false, best:true },
+  { id:7, cat:'breads', name:"Kerala Parotta", desc:"Layered, flaky, made fresh", price:25, veg:true },
+  { id:8, cat:'breads', name:"Appam", desc:"Set of 2, soft centre, lace edges", price:40, veg:true, best:true },
+  { id:15, cat:'breads', name:"Malabar Parotta", desc:"Flaky, soft, made with maida", price:30, veg:true },
+  { id:16, cat:'breads', name:"Kallappam", desc:"Fermented rice pancake", price:45, veg:true },
+  { id:9, cat:'sweets', name:"Ada Pradhaman", desc:"Rice ada in jaggery-coconut milk", price:80, veg:true, best:true },
+  { id:10, cat:'sweets', name:"Sulaimani Chai", desc:"Black tea, lemon, spices", price:30, veg:true },
+  { id:17, cat:'sweets', name:"Unniyappam", desc:"Fried rice jaggery snack", price:50, veg:true },
+  { id:18, cat:'sweets', name:"Chai Karak", desc:"Strong tea with spices", price:25, veg:true },
+  { id:21, cat:'sweets', name:"Falooda", desc:"Vermicelli dessert with ice-cream", price:90, veg:true, best:true },
+  { id:22, cat:'beverages', name:"Fresh Lime Soda", desc:"Sparkling lime with mint", price:60, veg:true },
+  { id:23, cat:'beverages', name:"Tender Coconut Water", desc:"Natural & refreshing", price:80, veg:true },
+  { id:24, cat:'beverages', name:"Mango Lassi", desc:"Sweet mango yoghurt drink", price:70, veg:true, best:true },
+  { id:25, cat:'starters', name:"Chicken 65", desc:"Spicy deep-fried chicken", price:220, veg:false, best:true },
+  { id:26, cat:'starters', name:"Gobi Manchurian", desc:"Crispy cauliflower in Chinese sauce", price:160, veg:true },
+  { id:27, cat:'starters', name:"Prawns Fry", desc:"Butter-garlic tossed prawns", price:280, veg:false, best:true },
+];
+
+const OFFERS = [
+  { id:1, name:"Weekend Special", type:"percentage", discount:"20%", desc:"20% off on all curries", validTill:"31 Aug 2026", grad:"offer-grad-1", icon:"🔥" },
+  { id:2, name:"BOGO on Appam", type:"bogo", discount:"BOGO", desc:"Buy 1 Get 1 free on Appam", validTill:"15 Jul 2026", grad:"offer-grad-2", icon:"🍞" },
+  { id:3, name:"Diwali Feast", type:"percentage", discount:"25%", desc:"25% off on your entire order", validTill:"31 Oct 2026", grad:"offer-grad-3", icon:"🎆" },
+  { id:4, name:"Happy Hour", type:"flat", discount:"₹50", desc:"₹50 off on all beverages", validTill:"30 Jul 2026", grad:"offer-grad-4", icon:"🍹" },
+  { id:5, name:"Student Discount", type:"percentage", discount:"15%", desc:"15% off with valid ID", validTill:"31 Dec 2026", grad:"offer-grad-5", icon:"🎓" },
+];
+
+const COUPONS = [
+  { code:"FEAST30", discount:"30% off", validTill:"31 Dec 2026" },
+  { code:"WELCOME15", discount:"15% off", validTill:"15 Aug 2026" },
+  { code:"SUMMER10", discount:"₹10 off", validTill:"30 Jun 2026" },
+];
+
+let REVIEWS = [
+  { id:1, customer:"Anand Krishnan", rating:5, text:"Authentic Kerala taste! The Sadya was divine.", date:"12 Jul 2026", replied:true },
+  { id:2, customer:"Meera Nair", rating:4, text:"Fish Moilee was superb. Will come again.", date:"11 Jul 2026", replied:false },
+  { id:3, customer:"Suresh Kumar", rating:5, text:"Best restaurant in Kochi. Highly recommend.", date:"10 Jul 2026", replied:true },
+  { id:4, customer:"Lakshmi Menon", rating:3, text:"Good food but service was a bit slow.", date:"9 Jul 2026", replied:false },
+  { id:5, customer:"Vikram Shah", rating:5, text:"The Karimeen Pollichathu is a must-try!", date:"8 Jul 2026", replied:false },
+  { id:6, customer:"Rahul Menon", rating:5, text:"Incredible flavors. Felt like home.", date:"7 Jul 2026", replied:true },
+  { id:7, customer:"Priya Krishnan", rating:4, text:"Good portion sizes and reasonable prices.", date:"6 Jul 2026", replied:false },
+  { id:8, customer:"Deepak Nair", rating:3, text:"Curry was a bit too spicy for me.", date:"5 Jul 2026", replied:false },
+  { id:9, customer:"Sneha Raj", rating:5, text:"The traditional sweets are amazing!", date:"4 Jul 2026", replied:true },
+  { id:10, customer:"Mohan Lal", rating:4, text:"Great ambiance and friendly staff.", date:"3 Jul 2026", replied:false },
+  { id:11, customer:"Anjali Nair", rating:5, text:"My favorite place in town!", date:"2 Jul 2026", replied:true },
+  { id:12, customer:"Vijay Kumar", rating:4, text:"Quick delivery and hot food.", date:"1 Jul 2026", replied:false },
+  { id:13, customer:"Sara Thomas", rating:5, text:"The seafood platter is a feast!", date:"30 Jun 2026", replied:true },
+  { id:14, customer:"Rajesh Nair", rating:4, text:"Good value for money.", date:"29 Jun 2026", replied:false },
+  { id:15, customer:"Anita Pillai", rating:5, text:"Loved the traditional Kerala vibe.", date:"28 Jun 2026", replied:true },
+  { id:16, customer:"John Varghese", rating:4, text:"Will definitely come back.", date:"27 Jun 2026", replied:false },
+  { id:17, customer:"Meera Krishnan", rating:5, text:"The appam and stew are heavenly.", date:"26 Jun 2026", replied:false },
+  { id:18, customer:"Deepak Raj", rating:3, text:"Bit crowded but food made up for it.", date:"25 Jun 2026", replied:false },
+  { id:19, customer:"Priya Nair", rating:5, text:"Excellent service and food.", date:"24 Jun 2026", replied:true },
+  { id:20, customer:"Ajith Kumar", rating:4, text:"Consistently good.", date:"23 Jun 2026", replied:false },
+];
+
+let ADDRESSES = [
+  { id:1, label:"Home", address:"123 Main St, Apt 4B, Kochi" },
+  { id:2, label:"Work", address:"Infopark, Phase 2, Kochi" },
+];
+
+const PAYMENTS = [
+  { id:1, type:"Visa", last4:"4242", expiry:"12/26" },
+  { id:2, type:"UPI", upi:"anjali@upi" },
+];
+
+const TABLES = [
+  { id:1, name:"A-01", status:"available" },
+  { id:2, name:"A-02", status:"occupied" },
+  { id:3, name:"A-03", status:"reserved" },
+  { id:4, name:"B-01", status:"available" },
+  { id:5, name:"B-02", status:"available" },
+  { id:6, name:"C-01", status:"available" },
+];
+
+const NOTIFICATIONS = [
+  { icon:'✅', msg:'Your order #ORD-2607-1234 has been delivered.', time:'2 hours ago' },
+  { icon:'🔥', msg:'Weekend Special: 20% off all curries!', time:'5 hours ago' },
+  { icon:'⏳', msg:'Your order #ORD-2607-1235 is being prepared.', time:'1 day ago' },
+  { icon:'🎉', msg:'Welcome to Malabar Table! Enjoy your meal.', time:'2 days ago' },
+];
+
+// ================================================================
+//  STATE
+// ================================================================
+let cart = {};
+let fulfilType = 'delivery';
+let detailQty = 1;
+let currentDetailItem = null;
+let favourites = JSON.parse(localStorage.getItem('malabar_favs') || '[]');
+let currentLang = 'en';
+let appliedCoupon = null;
+let selectedTableId = null;
+
+const img = (seed, w=300, h=300) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
+const findItem = id => ITEMS.find(x=>x.id===id);
+
+// ================================================================
+//  NAVIGATION HELPERS
+// ================================================================
+function goHome() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function goToMenu() {
+  const anchor = document.getElementById('menuAnchor');
+  if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function scrollToCat(key) {
+  const el = document.getElementById('cat-'+key);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ================================================================
+//  RENDER FUNCTIONS
+// ================================================================
+function renderOffersCarousel(){
+  const container = document.getElementById('offersCarousel');
+  container.innerHTML = OFFERS.map(o => `
+    <div class="offer-card-big ${o.grad}">
+      <span class="hot-badge">🔥 HOT</span>
+      <div>
+        <div class="discount-badge">${o.discount}</div>
+        <div class="offer-title">${o.name}</div>
+        <div class="offer-desc">${o.desc}</div>
+      </div>
+      <div class="offer-footer">
+        <span class="valid">Valid till ${o.validTill}</span>
+        <button class="claim-btn" onclick="alert('Offer claimed: ${o.name}!')">Claim Now</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderOffersAllGrid(){
+  const container = document.getElementById('offersAllGrid');
+  container.innerHTML = OFFERS.map(o => `
+    <div class="offer-card-sm ${o.grad}">
+      <div>
+        <div class="discount">${o.discount}</div>
+        <div class="name">${o.name}</div>
+        <div class="valid">${o.validTill}</div>
+      </div>
+      <button class="claim-btn-sm" onclick="alert('Offer claimed: ${o.name}!')">Claim</button>
+    </div>
+  `).join('');
+}
+
+function renderBento(){
+  document.getElementById('bentoGrid').innerHTML = CATEGORIES.map(c => `
+    <div class="bento-tile" onclick="scrollToCat('${c.key}')">
+      <img src="${img(c.img, 400, 300)}"><div class="bento-scrim"></div>
+      <div class="bento-count">${ITEMS.filter(i=>i.cat===c.key).length} items</div>
+      <div class="bento-chip"><span class="swatch" style="background:${c.color}"></span>${c.name}</div>
+    </div>
+  `).join('');
+}
+
+function renderBest(){
+  const bestItems = ITEMS.filter(i=>i.best);
+  document.getElementById('bestRow').innerHTML = bestItems.map(it => `
+    <div class="best-card" onclick="openDetail(${it.id})">
+      <div class="best-photo"><img src="${img('item'+it.id, 220, 220)}"><div class="best-add" onclick="event.stopPropagation();addItem(${it.id})">+</div></div>
+      <div class="best-name">${it.name}</div>
+      <div class="best-price">₹${it.price}</div>
+    </div>
+  `).join('');
+  renderBestsellerGrid();
+}
+
+function renderBestsellerGrid(){
+  const container = document.getElementById('bestsellerGrid');
+  const bestItems = ITEMS.filter(i=>i.best);
+  container.innerHTML = bestItems.map(it => `
+    <div class="best-item" onclick="openDetail(${it.id})">
+      <img src="${img('item'+it.id, 220, 220)}">
+      <div class="add-circle" onclick="event.stopPropagation();addItem(${it.id})">+</div>
+      <div class="name">${it.name}</div>
+      <div class="price">₹${it.price}</div>
+    </div>
+  `).join('');
+}
+
+function renderCategorySections(filter=''){
+  const filtered = filter ? ITEMS.filter(i=>i.name.toLowerCase().includes(filter.toLowerCase()) || i.desc.toLowerCase().includes(filter.toLowerCase())) : ITEMS;
+  const container = document.getElementById('categorySections');
+  if(filtered.length === 0){ container.innerHTML = `<div class="no-results">No items match your search.</div>`; return; }
+  container.innerHTML = CATEGORIES.map(c => {
+    const items = filtered.filter(i=>i.cat===c.key);
+    if(!items.length) return '';
+    return `<div id="cat-${c.key}" class="category-section" style="scroll-margin-top: calc(var(--topbar-height) + 10px);">
+      <div class="category-label"><span class="swatch" style="background:${c.color}"></span><h3>${c.name}</h3></div>
+      <div class="item-grid">${items.map(it => `
+        <div class="item-card" onclick="openDetail(${it.id})">
+          <div class="item-photo"><img src="${img('item'+it.id, 200, 200)}"><div class="veg-tag"><span class="veg-dot-i" style="background:${it.veg?'#3B7A2E':'#C1432D'}"></span></div>
+          <button class="favourite-toggle" style="position:absolute;bottom:4px;right:4px;background:rgba(255,255,255,0.8);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:none;font-size:14px;color:${isFavourite(it.id)?'var(--coral)':'var(--gray)'};" onclick="event.stopPropagation();toggleFavourite(${it.id})">${isFavourite(it.id)?'♥':'♡'}</button></div>
+          <div class="item-body"><div class="item-name">${it.name}</div><div class="item-desc">${it.desc}</div><div class="item-bottom"><span class="item-price">₹${it.price}</span><button class="add-pill" onclick="event.stopPropagation();addItem(${it.id})">+ Add</button></div></div>
+        </div>
+      `).join('')}</div></div>`;
+  }).join('');
+}
+
+function renderMenuAll(){
+  const container = document.getElementById('menuAllList');
+  container.innerHTML = ITEMS.map(it => `
+    <div class="menu-all-item" onclick="openDetail(${it.id})">
+      <img src="${img('item'+it.id, 120, 120)}">
+      <div class="info"><div class="name">${it.name}</div><span class="cat-tag">${CATEGORIES.find(c=>c.key===it.cat)?.name || it.cat}</span></div>
+      <div class="price-add"><span class="price">₹${it.price}</span><button class="add-btn" onclick="event.stopPropagation();addItem(${it.id})">Add</button></div>
+    </div>
+  `).join('');
+}
+
+function renderFavourites(){
+  const container = document.getElementById('favList');
+  if(!favourites.length){ container.innerHTML = '<div class="sheet-empty">No favourites yet.</div>'; return; }
+  container.innerHTML = favourites.map(id=>{
+    const it = findItem(id);
+    if(!it) return '';
+    return `<div class="fav-item"><img src="${img('item'+it.id, 120, 120)}"><div class="info"><div class="name">${it.name}</div><div class="price">₹${it.price}</div></div><button class="fav-remove" onclick="toggleFavourite(${it.id})">✕</button></div>`;
+  }).join('');
+}
+
+function renderNotifications(){
+  document.getElementById('notifList').innerHTML = NOTIFICATIONS.map(n => `<div class="notif-item"><div class="icon">${n.icon}</div><div class="msg">${n.msg}</div><div class="time">${n.time}</div></div>`).join('');
+}
+
+function renderOrdersHistory(){
+  const container = document.getElementById('ordersList');
+  const orderHistory = [
+    { id:"ORD-2607-1234", date:"12 Jul 2026", items:2, total:919, status:"delivered" },
+    { id:"ORD-2607-1235", date:"11 Jul 2026", items:1, total:260, status:"preparing" },
+    { id:"ORD-2607-1236", date:"10 Jul 2026", items:3, total:440, status:"cancelled" },
+  ];
+  container.innerHTML = orderHistory.map(o => `
+    <div style="padding:12px 0;border-bottom:1px solid var(--line);">
+      <div style="display:flex;justify-content:space-between;"><strong>${o.id}</strong><span class="badge ${o.status}">${o.status.charAt(0).toUpperCase()+o.status.slice(1)}</span></div>
+      <div style="font-size:13px;color:var(--gray);">${o.date} · ${o.items} items · ₹${o.total}</div>
+      ${o.status === 'delivered' ? `<button class="btn-primary" style="padding:2px 12px;font-size:11px;margin-top:4px;" onclick="openWriteReview()">Write Review</button>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderAddresses(){
+  const container = document.getElementById('addressesList');
+  container.innerHTML = ADDRESSES.map(a => `
+    <div class="address-card">
+      <div><strong>${a.label}</strong><br><span style="font-size:13px;color:var(--gray);">${a.address}</span></div>
+      <div class="actions">
+        <button onclick="editAddress(${a.id})"><i class="fas fa-edit"></i></button>
+        <button onclick="deleteAddress(${a.id})"><i class="fas fa-trash-alt"></i></button>
+      </div>
+    </div>
+  `).join('') + `<button class="cta" style="background:var(--teal);margin-top:16px;" onclick="openAddAddress()">Add New Address</button>`;
+}
+
+function renderPayments(){
+  const container = document.getElementById('paymentsList');
+  container.innerHTML = PAYMENTS.map(p => `
+    <div class="address-card">
+      <div><strong>${p.type}</strong><br><span style="font-size:13px;color:var(--gray);">${p.last4 ? '**** '+p.last4 : p.upi}${p.expiry ? ' · Exp '+p.expiry : ''}</span></div>
+    </div>
+  `).join('');
+}
+
+function renderTablesForBooking(){
+  const container = document.getElementById('tableSelectGrid');
+  container.innerHTML = TABLES.map(t => `
+    <div class="table-option ${t.status!=='available'?'reserved':''} ${selectedTableId===t.id?'selected':''}" onclick="${t.status==='available' ? `selectTable(${t.id})` : ''}">
+      ${t.name}<br><span style="font-size:10px;color:var(--gray);">${t.status}</span>
+    </div>
+  `).join('');
+}
+
+// ================================================================
+//  FAVOURITES
+// ================================================================
+function toggleFavourite(id){
+  if(!id) return;
+  const idx = favourites.indexOf(id);
+  if(idx > -1) favourites.splice(idx,1);
+  else favourites.push(id);
+  localStorage.setItem('malabar_favs', JSON.stringify(favourites));
+  updateFavUI();
+  if(document.getElementById('detailView').style.display !== 'none'){
+    const btn = document.getElementById('detailFavBtn');
+    btn.textContent = favourites.includes(id) ? '♥' : '♡';
+    btn.classList.toggle('active', favourites.includes(id));
+  }
+  renderCategorySections(document.querySelector('.search-wrap input')?.value || '');
+  renderBest();
+}
+function isFavourite(id){ return favourites.includes(id); }
+function updateFavUI(){
+  const favIcon = document.getElementById('favIcon');
+  favIcon.textContent = favourites.length ? '♥' : '♡';
+  favIcon.style.color = favourites.length ? 'var(--coral)' : 'inherit';
+  if(document.getElementById('favouritesView').style.display !== 'none') renderFavourites();
+}
+
+// ================================================================
+//  CART
+// ================================================================
+function addItem(id){ cart[id] = (cart[id]||0)+1; updateCart(); }
+function removeItem(id){ if(!cart[id]) return; cart[id]-=1; if(cart[id]<=0) delete cart[id]; updateCart(); }
+function cartTotal(){ return Object.entries(cart).reduce((s,[id,q])=>s+findItem(Number(id)).price*q,0); }
+function cartCount(){ return Object.values(cart).reduce((a,b)=>a+b,0); }
+
+function updateCart(){
+  const count = cartCount(), total = cartTotal();
+  ['topBadge','tabBadge'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(count>0){ el.classList.remove('hidden'); el.textContent = count; }
+    else el.classList.add('hidden');
+  });
+  document.getElementById('subtotalVal').textContent = '₹'+total;
+  document.getElementById('totalVal').textContent = '₹'+total;
+  document.getElementById('ctaTotal').textContent = '₹'+total;
+  document.getElementById('checkSubtotal').textContent = '₹'+total;
+  document.getElementById('checkoutTotal').textContent = '₹'+total;
+  document.getElementById('checkoutBtn').disabled = count===0;
+  const el = document.getElementById('cartLines');
+  if(count===0){ el.innerHTML = '<div class="sheet-empty">No items yet.<br>Tap + on any dish to add it.</div>'; return; }
+  el.innerHTML = Object.entries(cart).map(([id,qty])=>{
+    const it = findItem(Number(id));
+    return `<div class="cart-line"><img src="${img('item'+it.id, 120, 120)}"><div style="flex:1;"><div class="cart-line-name">${it.name}</div><div class="cart-line-price">₹${it.price} each</div></div><div class="stepper"><button onclick="removeItem(${id})">&minus;</button><span>${qty}</span><button onclick="addItem(${id})">+</button></div><div class="line-total">₹${it.price*qty}</div></div>`;
+  }).join('');
+  if(appliedCoupon) applyCoupon();
+}
+
+// ================================================================
+//  COUPON
+// ================================================================
+function applyCoupon(){
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const coupon = COUPONS.find(c => c.code === code);
+  const msg = document.getElementById('couponMessage');
+  if(!coupon){ msg.innerHTML = '<span style="color:#C1432D;">Invalid coupon code</span>'; return; }
+  appliedCoupon = coupon;
+  const total = cartTotal();
+  let discount = 0;
+  if(coupon.discount.includes('%')){
+    const pct = parseFloat(coupon.discount);
+    discount = (total * pct) / 100;
+  } else if(coupon.discount.includes('₹')){
+    discount = parseFloat(coupon.discount.replace('₹','').trim());
+  }
+  discount = Math.min(discount, total);
+  msg.innerHTML = `<span style="color:#3B7A2E;">Coupon applied! -₹${discount}</span>`;
+  document.getElementById('discountRow').style.display = 'flex';
+  document.getElementById('discountVal').textContent = '-₹'+discount;
+  document.getElementById('checkDiscountRow').style.display = 'flex';
+  document.getElementById('checkDiscountVal').textContent = '-₹'+discount;
+  const newTotal = total - discount;
+  document.getElementById('totalVal').textContent = '₹'+newTotal;
+  document.getElementById('checkoutTotal').textContent = '₹'+newTotal;
+}
+function clearCoupon(){
+  appliedCoupon = null;
+  document.getElementById('discountRow').style.display = 'none';
+  document.getElementById('checkDiscountRow').style.display = 'none';
+  document.getElementById('couponMessage').innerHTML = '';
+  updateCart();
+}
+
+// ================================================================
+//  SHEET MANAGEMENT
+// ================================================================
+function openSheet(view){
+  document.body.classList.add('no-scroll');
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('sheet').classList.add('show');
+  // hide all views
+  ['cartView','checkoutView','confirmView','trackView','detailView',
+   'favouritesView','notificationsView','profileView','contactView','qrView',
+   'ordersView','addressesView','paymentsView','settingsView','restaurantShowcaseView',
+   'bestsellersView','menuAllView','offersView','tableBookingView','writeReviewView'].forEach(id=>document.getElementById(id).style.display='none');
+  const map = {
+    cart:'cartView', checkout:'checkoutView', confirm:'confirmView', track:'trackView',
+    detail:'detailView', favourites:'favouritesView', notifications:'notificationsView',
+    profile:'profileView', contact:'contactView', qr:'qrView', orders:'ordersView',
+    addresses:'addressesView', payments:'paymentsView', settings:'settingsView',
+    restaurant:'restaurantShowcaseView', bestsellers:'bestsellersView', menuall:'menuAllView',
+    offers:'offersView', tableBooking:'tableBookingView', writeReview:'writeReviewView'
+  };
+  const target = map[view];
+  if(target) document.getElementById(target).style.display = 'block';
+  if(view === 'cart') updateCart();
+  if(view === 'favourites') renderFavourites();
+  if(view === 'notifications') renderNotifications();
+  if(view === 'bestsellers') renderBestsellerGrid();
+  if(view === 'menuall') renderMenuAll();
+  if(view === 'offers') renderOffersAllGrid();
+  if(view === 'orders') renderOrdersHistory();
+  if(view === 'addresses') renderAddresses();
+  if(view === 'payments') renderPayments();
+  if(view === 'tableBooking') renderTablesForBooking();
+
+  // fix height of sheet-body for detail view (to enable scrolling)
+  if(view === 'detail'){
+    setTimeout(function(){
+      const body = document.getElementById('detailBody');
+      if(body){
+        // set a fixed height based on the sheet's available space
+        const sheet = document.getElementById('sheet');
+        const headHeight = document.querySelector('#detailView .sheet-head').offsetHeight;
+        const footHeight = 0; // no foot in detail view
+        const handleHeight = 24; // handle + margins
+        const available = sheet.clientHeight - headHeight - handleHeight - 10;
+        body.style.maxHeight = available + 'px';
+        body.style.height = available + 'px';
+      }
+    }, 50);
+  }
+}
+function closeSheet(){
+  document.body.classList.remove('no-scroll');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('sheet').classList.remove('show');
+}
+function showCheckout(){
+  document.getElementById('cartView').style.display='none';
+  document.getElementById('checkoutView').style.display='block';
+  updateCart();
+}
+function setFulfil(type){
+  fulfilType = type;
+  document.getElementById('optDelivery').classList.toggle('active', type==='delivery');
+  document.getElementById('optPickup').classList.toggle('active', type==='pickup');
+  document.getElementById('addressField').style.display = type==='pickup' ? 'none' : 'block';
+}
+
+// ================================================================
+//  PLACE ORDER
+// ================================================================
+function placeOrder(){
+  const name = document.getElementById('custName').value.trim() || 'Guest';
+  const address = document.getElementById('custAddress').value.trim();
+  let total = cartTotal();
+  if(appliedCoupon){
+    const discount = appliedCoupon.discount.includes('%') ? (total * parseFloat(appliedCoupon.discount)) / 100 : parseFloat(appliedCoupon.discount.replace('₹','').trim());
+    total = Math.max(0, total - discount);
+  }
+  const lines = Object.entries(cart).map(([id,qty])=>{ const it=findItem(Number(id)); return `${qty} x ${it.name} - ₹${it.price*qty}`; }).join('%0A');
+  const orderNo = 'ORD-2607-' + String(Math.floor(1000+Math.random()*9000));
+  const msg = `Hi Malabar Table, confirming order ${orderNo}%0A%0A${lines}%0A%0ATotal: ₹${total}%0AName: ${name}%0A${fulfilType==='delivery' ? 'Deliver to: '+address : 'Pickup at store'}`;
+  document.getElementById('waLink').href = `https://wa.me/919847000000?text=${msg}`;
+  document.getElementById('orderNo').textContent = orderNo;
+  document.getElementById('trackOrderId').textContent = orderNo.slice(-4);
+  document.getElementById('trackSummary').innerHTML = lines.replace(/%0A/g,'<br>') + `<br><strong>Total: ₹${total}</strong>`;
+  document.getElementById('checkoutView').style.display='none';
+  document.getElementById('confirmView').style.display='block';
+  clearCoupon();
+}
+function showTracking(){
+  document.getElementById('confirmView').style.display='none';
+  document.getElementById('trackView').style.display='block';
+}
+function cancelOrder(){
+  if(confirm('Are you sure you want to cancel this order?')){
+    alert('Order cancelled!');
+    closeSheet();
+  }
+}
+
+// ================================================================
+//  PRODUCT DETAIL
+// ================================================================
+function openDetail(id){
+  const item = findItem(id);
+  if(!item) return;
+  currentDetailItem = item;
+  detailQty = 1;
+  document.getElementById('detailImg').src = img('item'+item.id, 400, 300);
+  document.getElementById('detailName').textContent = item.name;
+  document.getElementById('detailDesc').textContent = item.desc;
+  document.getElementById('detailPrice').textContent = '₹'+item.price;
+  document.getElementById('detailTitle').textContent = item.name;
+  document.getElementById('detailQty').textContent = 1;
+  const favBtn = document.getElementById('detailFavBtn');
+  favBtn.textContent = isFavourite(id) ? '♥' : '♡';
+  favBtn.classList.toggle('active', isFavourite(id));
+  document.querySelectorAll('#variantPills .variant-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelector('#variantPills .variant-pill').classList.add('active');
+  // Render reviews
+  document.getElementById('productReviews').innerHTML = `
+    <div style="font-weight:600;margin-bottom:6px;">Reviews (${REVIEWS.length})</div>
+    ${REVIEWS.map(r => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line);"><strong>${r.customer}</strong> ${'⭐'.repeat(r.rating)}<br>${r.text}</div>`).join('')}
+  `;
+  openSheet('detail');
+}
+function changeDetailQty(delta){
+  let q = detailQty + delta;
+  if(q<1) q=1;
+  detailQty = q;
+  document.getElementById('detailQty').textContent = q;
+}
+function addDetailToCart(){
+  if(!currentDetailItem) return;
+  cart[currentDetailItem.id] = (cart[currentDetailItem.id]||0) + detailQty;
+  updateCart();
+  closeSheet();
+  setTimeout(()=>openSheet('cart'), 300);
+}
+function openWriteReview(){
+  closeSheet();
+  setTimeout(()=>openSheet('writeReview'), 300);
+}
+function submitReview(){
+  const rating = document.querySelectorAll('#reviewStars .star.active').length || 5;
+  const text = document.getElementById('reviewText').value.trim() || 'Great food!';
+  REVIEWS.push({ id: Date.now(), customer: "Anjali Nair", rating, text, date: new Date().toLocaleDateString(), replied: false });
+  alert('Review submitted! Thank you.');
+  closeSheet();
+}
+
+// ================================================================
+//  TABLE BOOKING
+// ================================================================
+function selectTable(id){
+  if(TABLES.find(t=>t.id===id)?.status !== 'available') return;
+  selectedTableId = id;
+  renderTablesForBooking();
+}
+function bookTable(){
+  if(!selectedTableId){ alert('Please select a table.'); return; }
+  const date = document.getElementById('bookingDate').value;
+  const time = document.getElementById('bookingTime').value;
+  const people = document.getElementById('bookingPeople').value;
+  const requests = document.getElementById('bookingRequests').value;
+  alert(`Table booked successfully!\nDate: ${date}\nTime: ${time}\nPeople: ${people}\nRequests: ${requests}`);
+  closeSheet();
+}
+
+// ================================================================
+//  ADDRESS MANAGEMENT
+// ================================================================
+function openAddAddress(){
+  const label = prompt('Enter address label (e.g. Home, Work):');
+  if(!label) return;
+  const addr = prompt('Enter address:');
+  if(!addr) return;
+  ADDRESSES.push({ id: Date.now(), label, address: addr });
+  renderAddresses();
+}
+function editAddress(id){
+  const a = ADDRESSES.find(ad=>ad.id===id);
+  if(!a) return;
+  const newLabel = prompt('Edit label:', a.label);
+  if(newLabel) a.label = newLabel;
+  const newAddr = prompt('Edit address:', a.address);
+  if(newAddr) a.address = newAddr;
+  renderAddresses();
+}
+function deleteAddress(id){
+  if(confirm('Delete this address?')){
+    ADDRESSES = ADDRESSES.filter(a=>a.id!==id);
+    renderAddresses();
+  }
+}
+
+// ================================================================
+//  THEME & DARK MODE
+// ================================================================
+function toggleDarkMode(){
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('darkToggle').classList.toggle('active', next==='dark');
+  localStorage.setItem('theme', next);
+}
+if(localStorage.getItem('theme') === 'dark'){
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.getElementById('darkToggle').classList.add('active');
+}
+
+// ================================================================
+//  LANGUAGE
+// ================================================================
+function toggleLang(){
+  const sel = document.querySelector('.lang-select');
+  sel.value = sel.value === 'en' ? 'ml' : 'en';
+  changeLang(sel.value);
+}
+function changeLang(lang){
+  currentLang = lang;
+  document.querySelector('.brand-text .name').textContent = lang === 'ml' ? 'മലബാർ ടേബിൾ' : 'Malabar Table';
+  document.querySelector('.brand-text .sub').textContent = lang === 'ml' ? 'ഡിജിറ്റൽ മെനു' : 'Digital Menu';
+}
+
+// ================================================================
+//  SEARCH
+// ================================================================
+function handleSearch(e){
+  const val = e.target.value;
+  document.querySelector('.search-wrap .clear-search').style.display = val ? 'block' : 'none';
+  renderCategorySections(val);
+}
+function clearSearch(){
+  const input = document.querySelector('.search-wrap input');
+  input.value = '';
+  renderCategorySections('');
+  document.querySelector('.search-wrap .clear-search').style.display = 'none';
+}
+
+function setTab(el){
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ================================================================
+//  HERO CAROUSEL
+// ================================================================
+let currentSlide = 0;
+const totalSlides = 3;
+function showSlide(index){
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('#heroDots span');
+  slides.forEach((s,i)=> s.classList.toggle('active', i===index));
+  dots.forEach((d,i)=> d.classList.toggle('active', i===index));
+  currentSlide = index;
+}
+function nextSlide(){ showSlide((currentSlide + 1) % totalSlides); }
+let autoSlideInterval = setInterval(nextSlide, 4000);
+document.querySelectorAll('#heroDots span').forEach(dot=>{
+  dot.addEventListener('click', function(){
+    const idx = parseInt(this.dataset.index);
+    showSlide(idx);
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(nextSlide, 4000);
+  });
+});
+
+// ================================================================
+//  STAR RATING (Write Review)
+// ================================================================
+document.addEventListener('click', function(e){
+  if(e.target.closest('.star-rating')){
+    const star = e.target.closest('.star');
+    if(!star) return;
+    const val = parseInt(star.dataset.val);
+    const container = star.closest('.star-rating');
+    container.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+    });
+  }
+});
+
+// ================================================================
+//  INIT
+// ================================================================
+renderOffersCarousel();
+renderOffersAllGrid();
+renderBento();
+renderBest();
+renderCategorySections();
+renderAddresses();
+renderPayments();
+updateCart();
+updateFavUI();
+</script>
+</body>
+</html>
