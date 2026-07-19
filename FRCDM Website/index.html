@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="Malabar Table — Authentic Kerala cuisine, seafood, and traditional favourites. Browse our digital menu, order via WhatsApp, and explore today's specials in Kochi.">
+  <meta name="keywords" content="Malabar Table, Kerala restaurant, digital menu, Kochi, seafood, sadya, WhatsApp order">
+  <meta name="author" content="Malabar Table">
+  <meta name="robots" content="index, follow">
+  <meta name="format-detection" content="telephone=yes">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Malabar Table — Modern Digital Menu">
+  <meta property="og:description" content="Authentic Kerala flavours. Browse dishes, apply offers, and order via WhatsApp.">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:site_name" content="Malabar Table">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Malabar Table — Modern Digital Menu">
+  <meta name="twitter:description" content="Authentic Kerala flavours. Browse dishes, apply offers, and order via WhatsApp.">
+
+  <title>Malabar Table — Modern Digital Menu</title>
+
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Malabar Table",
+    "description": "Authentic Kerala cuisine, seafood, and traditional favourites in Kochi.",
+    "servesCuisine": ["Kerala", "Indian", "Seafood"],
+    "telephone": "+91-98470-12345",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123, Main Street",
+      "addressLocality": "Kochi",
+      "addressRegion": "Kerala",
+      "postalCode": "682001",
+      "addressCountry": "IN"
+    },
+    "openingHoursSpecification": [{
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      "opens": "10:00",
+      "closes": "22:00"
+    }],
+    "priceRange": "₹₹"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to menu</a>
+
+  <div class="app">
+    <header class="topbar" role="banner">
+      <button type="button" class="brand" data-action="restaurant" aria-label="About Malabar Table">
+        <div class="logo" aria-hidden="true"><span>MT</span></div>
+        <div>
+          <div class="brand-name">Malabar Table</div>
+          <div class="brand-sub">Digital Menu</div>
+        </div>
+      </button>
+      <div class="actions">
+        <button type="button" class="icon-btn" data-action="notifications" aria-label="Notifications">
+          ♧<span class="badge" id="notifBadge">3</span>
+        </button>
+        <button type="button" class="icon-btn" data-action="profile" aria-label="Profile">◉</button>
+        <button type="button" class="icon-btn" data-action="cart" aria-label="Cart">
+          🛍<span class="badge hidden" id="topBadge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="content" id="main-content">
+      <section class="hero" id="hero" aria-label="Featured promotions" aria-live="polite"></section>
+
+      <div class="search-row">
+        <div class="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Search dishes, categories..." aria-label="Search menu" autocomplete="off">
+          <button type="button" class="clear" id="clearSearch" aria-label="Clear search">×</button>
+        </div>
+        <button type="button" class="icon-btn" data-action="qr" aria-label="Scan QR">▣</button>
+      </div>
+
+      <div class="quick-actions" role="toolbar" aria-label="Quick category filters">
+        <button type="button" class="quick active" data-cat="all">All Menu</button>
+        <button type="button" class="quick" data-cat="sadya">Today's Sadya</button>
+        <button type="button" class="quick" data-cat="curries">Curries</button>
+        <button type="button" class="quick" data-cat="breads">Breads</button>
+        <button type="button" class="quick" data-cat="sweets">Sweets</button>
+        <button type="button" class="quick" data-cat="beverages">Beverages</button>
+      </div>
+
+      <section class="section" aria-labelledby="offers-heading">
+        <div class="section-head">
+          <h2 id="offers-heading">🔥 Hot Offers</h2>
+          <button type="button" class="see" data-action="offers">View all</button>
+        </div>
+        <div class="offer-row" id="offersCarousel"></div>
+      </section>
+
+      <section class="section" aria-labelledby="favourites-heading">
+        <div class="section-head">
+          <h2 id="favourites-heading">⭐ Customer favourites</h2>
+          <button type="button" class="see" data-action="bestsellers">See all</button>
+        </div>
+        <div class="bestsellers" id="bestRow"></div>
+      </section>
+
+      <section class="section" id="menuSection" aria-labelledby="menu-heading">
+        <div class="section-head">
+          <h2 id="menu-heading">Menu</h2>
+          <small id="resultCount"></small>
+        </div>
+        <nav class="category-nav" id="categoryNav" aria-label="Menu categories"></nav>
+        <div class="menu-layout">
+          <div class="menu-list" id="menuList" role="list"></div>
+          <aside class="side-cart" aria-label="Order summary">
+            <div class="cart-head">
+              <h3>Your Order</h3>
+              <span id="cartCountLabel">0 items</span>
+            </div>
+            <div class="cart-body" id="desktopCart"></div>
+            <div class="summary">
+              <div class="coupon">
+                <input id="desktopCoupon" placeholder="Coupon code" aria-label="Coupon code">
+                <button type="button">Apply</button>
+              </div>
+              <div class="summary-row"><span>Subtotal</span><strong id="desktopSubtotal">₹0</strong></div>
+              <div class="summary-row" id="desktopDiscountRow" style="display:none"><span>Discount</span><strong id="desktopDiscount">-₹0</strong></div>
+              <div class="summary-row total"><span>Total</span><span id="desktopTotal">₹0</span></div>
+              <button type="button" class="cta" id="desktopCheckout" disabled>View Cart & Checkout</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <footer class="site-footer" role="contentinfo">
+        <p>&copy; <span id="year"></span> Malabar Table · Kerala Cuisine</p>
+        <p><a href="tel:+919847012345">+91 98470 12345</a> · Kochi, Kerala</p>
+      </footer>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary">
+      <button type="button" class="nav-item active" data-action="home"><span class="nav-icon">⌂</span>Home</button>
+      <button type="button" class="nav-item" data-action="menu"><span class="nav-icon">☷</span>Menu</button>
+      <button type="button" class="nav-item" data-action="cart"><span class="nav-icon">🛍</span>Order<span class="badge hidden" id="tabBadge">0</span></button>
+      <button type="button" class="nav-item" data-action="contact"><span class="nav-icon">⌁</span>Contact</button>
+    </nav>
+  </div>
+
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="handle" aria-hidden="true"></div>
+    <div id="sheetContent"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
