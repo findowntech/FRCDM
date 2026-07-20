@@ -221,8 +221,10 @@ function renderBest() {
   const bestItems = ITEMS.filter((i) => i.best);
   document.getElementById('bestRow').innerHTML = bestItems.map((it) => `
     <div class="best-card" onclick="openDetail(${it.id})">
-      <div class="best-photo">
-        <img src="${img('item' + it.id, 220, 220)}" alt="${it.name}" loading="lazy">
+      <div class="best-photo-wrap">
+        <div class="best-photo">
+          <img src="${img('item' + it.id, 220, 220)}" alt="${it.name}" loading="lazy">
+        </div>
         <button type="button" class="best-add" aria-label="Add ${it.name}" onclick="event.stopPropagation();addItem(${it.id})">+</button>
       </div>
       <div class="best-name">${it.name}</div>
@@ -236,8 +238,10 @@ function renderBestsellerGrid() {
   if (!el) return;
   el.innerHTML = ITEMS.filter((i) => i.best).map((it) => `
     <div class="best-item" onclick="openDetail(${it.id})">
-      <div class="img-wrap">
-        <img src="${img('item' + it.id, 220, 220)}" alt="${it.name}" loading="lazy">
+      <div class="best-photo-wrap">
+        <div class="best-photo">
+          <img src="${img('item' + it.id, 220, 220)}" alt="${it.name}" loading="lazy">
+        </div>
         <button type="button" class="best-add" aria-label="Add ${it.name}" onclick="event.stopPropagation();addItem(${it.id})">+</button>
       </div>
       <div class="best-name">${it.name}</div>
