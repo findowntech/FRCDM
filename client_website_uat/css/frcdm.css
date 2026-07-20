@@ -197,7 +197,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 /* Bestsellers — circular cards with floating add button (V1 C pattern) */
 .bestseller-row {
   display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none;
-  padding: 2px 2px 10px; -webkit-overflow-scrolling: touch;
+  padding: 4px 4px 14px; -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
 }
 .bestseller-row::-webkit-scrollbar { display: none; }
@@ -205,17 +205,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   flex: 0 0 auto; width: 104px; text-align: center; cursor: pointer;
   scroll-snap-align: start;
 }
+.best-photo-wrap {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto;
+}
 .best-photo {
-  width: 104px; height: 104px; border-radius: 50%; overflow: hidden; position: relative;
-  margin: 0 auto; border: 3px solid var(--surface);
+  width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--surface);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 .best-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .best-add {
-  position: absolute; bottom: 2px; right: 2px; width: 26px; height: 26px; border-radius: 50%;
-  background: var(--accent); color: #fff; border: 2px solid var(--surface); font-size: 15px;
+  position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: 2px solid var(--surface); font-size: 16px;
   display: flex; align-items: center; justify-content: center; font-weight: 700; line-height: 1;
-  padding: 0; z-index: 2; box-shadow: 0 2px 8px rgba(255, 90, 54, 0.35); cursor: pointer;
+  padding: 0; z-index: 3; box-shadow: 0 2px 8px rgba(255, 90, 54, 0.35); cursor: pointer;
+  transform: translate(12%, 12%);
 }
 .best-name {
   font-size: 12px; font-weight: 700; margin-top: 8px; line-height: 1.3;
@@ -226,19 +233,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 6px 0;
 }
 .bestseller-grid .best-item { text-align: center; cursor: pointer; }
-.bestseller-grid .best-item .img-wrap {
-  position: relative; width: 100%; max-width: 120px; margin: 0 auto;
+.bestseller-grid .best-photo-wrap {
+  position: relative; width: 100%; max-width: 120px; height: auto; aspect-ratio: 1; margin: 0 auto;
 }
-.bestseller-grid .best-item img {
-  width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 50%;
-  border: 3px solid var(--surface); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); display: block;
+.bestseller-grid .best-photo {
+  width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--surface); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
-.bestseller-grid .best-item .best-add,
-.bestseller-grid .add-circle {
-  position: absolute; bottom: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%;
-  background: var(--accent); color: #fff; border: 2px solid var(--surface); font-size: 14px;
-  display: flex; align-items: center; justify-content: center; font-weight: 700; line-height: 1;
-  padding: 0; z-index: 2;
+.bestseller-grid .best-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bestseller-grid .best-add {
+  position: absolute; bottom: 0; right: 0; transform: translate(12%, 12%);
 }
 .bestseller-grid .best-item .best-name { margin-top: 6px; }
 .bestseller-grid .best-item .best-price { margin-top: 1px; }
@@ -651,8 +655,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .bento-tile { height: 100px; }
   .best-card { width: 92px; }
-  .best-photo { width: 92px; height: 92px; }
-  .best-add { width: 24px; height: 24px; font-size: 14px; }
+  .best-photo-wrap { width: 92px; height: 92px; }
+  .best-add { width: 26px; height: 26px; font-size: 14px; }
   .offer { flex: 0 0 260px; }
   .offers-grid { grid-template-columns: 1fr; }
   .bestseller-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
