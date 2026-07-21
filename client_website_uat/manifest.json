@@ -1,0 +1,21 @@
+{
+  "name": "Malabar Table — Digital Menu",
+  "short_name": "Malabar Table",
+  "description": "Authentic Kerala cuisine digital menu. Browse dishes and order via WhatsApp.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f6f5f2",
+  "theme_color": "#111111",
+  "lang": "en-IN",
+  "categories": ["food", "restaurant"],
+  "icons": [
+    {
+      "src": "assets/icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
