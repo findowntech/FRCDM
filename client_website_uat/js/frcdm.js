@@ -117,6 +117,28 @@ const findItem = (id) => ITEMS.find((x) => x.id === id);
 const money = (n) => '₹' + Math.round(n);
 const isFavourite = (id) => favourites.includes(id);
 
+const FAV_ICONS = {
+  empty: 'assets/icons/empty-favorite-icon.png',
+  filled: 'assets/icons/filled-favorite-icon.png'
+};
+
+function favIconImg(filled, extraClass = '') {
+  const src = filled ? FAV_ICONS.filled : FAV_ICONS.empty;
+  const label = filled ? 'Remove from favourites' : 'Add to favourites';
+  const cls = extraClass ? ` fav-icon ${extraClass}` : ' fav-icon';
+  return `<img src="${src}" class="${cls.trim()}" alt="${label}" width="20" height="20">`;
+}
+
+function setFavButtonIcon(btn, filled) {
+  if (!btn) return;
+  const extraClass = btn.classList.contains('fav-mini') ? 'fav-icon-mini'
+    : btn.classList.contains('favourite-toggle') ? 'fav-icon-toggle'
+    : btn.classList.contains('icon-btn') ? 'fav-icon-header' : '';
+  btn.innerHTML = favIconImg(filled, extraClass);
+  btn.classList.toggle('active', filled);
+  btn.setAttribute('aria-label', filled ? 'Remove from favourites' : 'Add to favourites');
+}
+
 function cartCount() { return Object.values(cart).reduce((a, b) => a + b, 0); }
 function cartTotal() {
   return Object.entries(cart).reduce((s, [id, q]) => s + findItem(+id).price * q, 0);
@@ -266,8 +288,8 @@ function itemCardHtml(it) {
       <div class="item-photo">
         <img src="${img('item-' + it.id, 200, 200)}" alt="${it.name}" loading="lazy">
         <span class="veg ${it.veg ? '' : 'nonveg'}"><i></i></span>
-        <button type="button" class="fav-mini" style="color:${fav ? 'var(--accent)' : 'var(--muted)'}"
-          onclick="event.stopPropagation();toggleFavourite(${it.id})">${fav ? '♥' : '♡'}</button>
+        <button type="button" class="fav-mini${fav ? ' active' : ''}"
+          onclick="event.stopPropagation();toggleFavourite(${it.id})">${favIconImg(fav, 'fav-icon-mini')}</button>
       </div>
       <div class="item-body">
         <div class="item-name">${it.name}</div>
@@ -475,20 +497,12 @@ function toggleFavourite(id) {
   renderBest();
   renderBestsellerGrid();
   if (currentDetailItem?.id === id) {
-    const btn = document.getElementById('detailFavBtn');
-    if (btn) {
-      btn.textContent = isFavourite(id) ? '♥' : '♡';
-      btn.classList.toggle('active', isFavourite(id));
-    }
+    setFavButtonIcon(document.getElementById('detailFavBtn'), isFavourite(id));
   }
 }
 
 function updateFavUI() {
-  const favIcon = document.getElementById('favIcon');
-  if (favIcon) {
-    favIcon.textContent = favourites.length ? '♥' : '♡';
-    favIcon.style.color = favourites.length ? 'var(--accent)' : '';
-  }
+  setFavButtonIcon(document.getElementById('favIcon'), favourites.length > 0);
   if (document.getElementById('favouritesView')?.style.display !== 'none') renderFavourites();
 }
 
@@ -682,9 +696,7 @@ function populateDetail(it) {
   document.getElementById('detailPrice').textContent = money(it.price);
   document.getElementById('detailTitle').textContent = it.name;
   document.getElementById('detailQty').textContent = '1';
-  const favBtn = document.getElementById('detailFavBtn');
-  favBtn.textContent = isFavourite(it.id) ? '♥' : '♡';
-  favBtn.classList.toggle('active', isFavourite(it.id));
+  setFavButtonIcon(document.getElementById('detailFavBtn'), isFavourite(it.id));
   renderProductReviews();
 }
 

@@ -300,7 +300,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .item-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
 .item-photo { width: 100px; height: 100px; border-radius: 16px; overflow: hidden; position: relative; flex: 0 0 100px; align-self: center; }
-.item-photo img { width: 100%; height: 100%; object-fit: cover; }
+.item-photo > img { width: 100%; height: 100%; object-fit: cover; }
 .veg {
   position: absolute; left: 6px; top: 6px; background: rgba(255, 255, 255, 0.92);
   border-radius: 7px; padding: 4px;
@@ -308,8 +308,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .veg i { display: block; width: 9px; height: 9px; border-radius: 50%; background: #278a47; }
 .veg.nonveg i { background: #c63c2c; }
 .fav-mini {
-  position: absolute; bottom: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9); border: none; font-size: 13px; display: grid; place-items: center;
+  position: absolute; bottom: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%;
+  background: transparent; border: none; display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; line-height: 0;
 }
 .item-body {
   flex: 1 1 auto; min-width: 0; width: 100%;
@@ -442,8 +443,17 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .variant-pill.active { border-color: var(--accent); background: rgba(255, 90, 54, 0.1); color: var(--accent); }
 .addon-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
 .addon-item input { accent-color: var(--accent); width: 16px; height: 16px; }
-.favourite-toggle { background: transparent; border: none; font-size: 22px; cursor: pointer; color: var(--muted); }
+.favourite-toggle {
+  background: transparent; border: none; cursor: pointer; color: var(--muted);
+  display: inline-grid; place-items: center; padding: 0; line-height: 0;
+}
 .favourite-toggle.active { color: var(--accent); }
+.fav-icon { display: block; object-fit: contain; pointer-events: none; }
+.fav-icon-header { width: 18px; height: 18px; }
+.fav-icon-toggle { width: 22px; height: 22px; }
+.fav-icon-mini { width: 13px; height: 13px; }
+.fav-icon-row { width: 18px; height: 18px; }
+.fav-mini.active, .favourite-toggle.active, .icon-btn.active { background: transparent; }
 .detail-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
 .reviews-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
 .reviews-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
