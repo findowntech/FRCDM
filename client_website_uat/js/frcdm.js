@@ -111,6 +111,14 @@ let appliedCoupon = null;
 let selectedTableId = null;
 let currentSearch = '';
 let currentSlide = 0;
+const BOOKING_TIMEOUT_MS = 5 * 60 * 1000;
+let activeBooking = (() => {
+  try {
+    return JSON.parse(localStorage.getItem('malabar_table_booking') || 'null');
+  } catch {
+    return null;
+  }
+})();
 
 const img = (seed, w = 400, h = 400) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
 const findItem = (id) => ITEMS.find((x) => x.id === id);
@@ -581,15 +589,61 @@ function renderPayments() {
   `).join('');
 }
 
+function clearExpiredBooking() {
+  if (!activeBooking || activeBooking.expiresAt > Date.now()) return false;
+  activeBooking = null;
+  localStorage.removeItem('malabar_table_booking');
+  return true;
+}
+
+function getTableStatus(table) {
+  return activeBooking?.tableId === table.id ? 'booked' : table.status;
+}
+
+function formatBookingTimeRemaining() {
+  const remaining = Math.max(0, activeBooking.expiresAt - Date.now());
+  const minutes = Math.floor(remaining / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function renderBookingDetails() {
+  const el = document.getElementById('bookingDetails');
+  if (!el) return;
+  clearExpiredBooking();
+  if (!activeBooking) {
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    return;
+  }
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="booking-summary-head">
+      <strong>Table booking confirmed</strong>
+      <span class="booking-status">Active</span>
+    </div>
+    <div class="booking-summary-grid">
+      <span>Table <strong>${activeBooking.tableName}</strong></span>
+      <span>Guests <strong>${activeBooking.people}</strong></span>
+      <span>${activeBooking.date}</span>
+      <span>${activeBooking.time}</span>
+    </div>
+    <div class="booking-expiry">Table hold expires in <strong>${formatBookingTimeRemaining()}</strong></div>
+    <button type="button" class="booking-cancel" onclick="cancelTableBooking()">Cancel booking</button>`;
+}
+
 function renderTablesForBooking() {
+  const bookingExpired = clearExpiredBooking();
   const el = document.getElementById('tableSelectGrid');
   if (!el) return;
   el.innerHTML = TABLES.map((t) => `
-    <button type="button" class="table-option status-${t.status} ${selectedTableId === t.id ? 'selected' : ''}"
-      ${t.status === 'available' ? `onclick="selectTable(${t.id})"` : 'disabled'}>
-      <strong>${t.name}</strong><small>${t.status}</small>
+    <button type="button" class="table-option status-${getTableStatus(t)} ${selectedTableId === t.id ? 'selected' : ''}"
+      ${getTableStatus(t) === 'available' ? `onclick="selectTable(${t.id})"` : 'disabled'}>
+      <strong>${t.name}</strong><small>${getTableStatus(t)}</small>
     </button>
   `).join('');
+  renderBookingDetails();
+  if (bookingExpired) showToast('Your table hold has expired');
 }
 
 const SHEET_VIEWS = [
@@ -761,6 +815,10 @@ function selectTable(id) {
 }
 
 function bookTable() {
+  if (activeBooking && activeBooking.expiresAt > Date.now()) {
+    showToast('You already have an active table booking');
+    return;
+  }
   if (!selectedTableId) { showToast('Please select a table'); return; }
   const date = document.getElementById('bookingDate')?.value;
   const time = document.getElementById('bookingTime')?.value;
@@ -770,10 +828,26 @@ function bookTable() {
     showToast('Please select a date, time, and table');
     return;
   }
-  table.status = 'reserved';
+  activeBooking = {
+    tableId: table.id,
+    tableName: table.name,
+    date,
+    time,
+    people,
+    expiresAt: Date.now() + BOOKING_TIMEOUT_MS
+  };
+  localStorage.setItem('malabar_table_booking', JSON.stringify(activeBooking));
   selectedTableId = null;
   renderTablesForBooking();
-  showToast(`Table ${table.name} reserved for ${people} on ${date} at ${time}`);
+  showToast(`Table ${table.name} is held for 5 minutes`);
+}
+
+function cancelTableBooking() {
+  if (!activeBooking) return;
+  activeBooking = null;
+  localStorage.removeItem('malabar_table_booking');
+  renderTablesForBooking();
+  showToast('Table booking cancelled');
 }
 
 function editAddress(id) {
@@ -970,6 +1044,16 @@ document.addEventListener('DOMContentLoaded', () => {
     bookingDate.value = tomorrow;
     bookingDate.min = tomorrow;
   }
+  renderBookingDetails();
+  setInterval(() => {
+    if (!activeBooking) return;
+    if (clearExpiredBooking()) {
+      renderTablesForBooking();
+      showToast('Your table hold has expired');
+    } else {
+      renderBookingDetails();
+    }
+  }, 1000);
 
   const params = new URLSearchParams(window.location.search);
   if (params.get('table') || params.get('qr')) {

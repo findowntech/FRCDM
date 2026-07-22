@@ -432,6 +432,7 @@
       <div id="tableBookingView" style="display:none;">
         <div class="sheet-head"><h2>Book a Table</h2><button type="button" class="close" onclick="closeSheet()">×</button></div>
         <div class="sheet-body">
+          <div class="booking-summary hidden" id="bookingDetails" aria-live="polite"></div>
           <div class="booking-date-time">
             <div class="form-field"><label for="bookingDate">Date</label><input type="date" id="bookingDate"></div>
             <div class="form-field"><label for="bookingTime">Time</label><input type="time" id="bookingTime" value="19:30" min="10:00" max="22:00" step="900"></div>

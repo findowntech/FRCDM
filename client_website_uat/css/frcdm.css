@@ -580,6 +580,21 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 
 /* Table booking */
+.booking-summary {
+  margin-bottom: 18px; padding: 14px; border: 1px solid rgba(46, 139, 87, 0.3);
+  border-radius: 16px; background: rgba(46, 139, 87, 0.1);
+}
+.booking-summary-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.booking-status {
+  padding: 3px 8px; border-radius: 999px; background: rgba(46, 139, 87, 0.18);
+  color: var(--success); font-size: 10px; font-weight: 800; text-transform: uppercase;
+}
+.booking-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0; font-size: 13px; }
+.booking-summary-grid span { color: var(--muted); }
+.booking-summary-grid strong { color: var(--ink); }
+.booking-expiry { color: var(--muted); font-size: 12px; }
+.booking-expiry strong { color: var(--accent); }
+.booking-cancel { margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--accent); font-size: 12px; font-weight: 800; }
 .table-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .table-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: -2px 0 10px; }
 .table-legend span, .table-option small {
@@ -599,6 +614,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .status-occupied small, .table-legend .occupied { background: rgba(217, 106, 76, 0.16); color: #b8452b; }
 .status-reserved { cursor: not-allowed; background: color-mix(in srgb, var(--surface-2) 70%, #e0a21a 30%); }
 .status-reserved small, .table-legend .reserved { background: rgba(224, 162, 26, 0.18); color: #936400; }
+.status-booked { cursor: not-allowed; background: color-mix(in srgb, var(--surface-2) 70%, #ff5a36 30%); }
+.status-booked small { background: rgba(255, 90, 54, 0.16); color: var(--accent-2); }
 .table-option:disabled { opacity: 1; }
 
 /* Order tracking */
