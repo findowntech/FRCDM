@@ -458,7 +458,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .favourite-toggle.active { color: var(--accent); }
 .fav-icon { display: block; object-fit: contain; pointer-events: none; }
 .fav-icon-header { width: 18px; height: 18px; }
-.fav-icon-toggle { width: 20px; height: 20px; }
+.fav-icon-toggle { width: 17px; height: 17px; }
 .fav-icon-mini { width: 13px; height: 13px; }
 .fav-icon-row { width: 18px; height: 18px; }
 .notification-icon { display: block; object-fit: contain; pointer-events: none; }
