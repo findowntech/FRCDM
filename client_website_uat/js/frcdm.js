@@ -590,7 +590,7 @@ function renderPayments() {
 }
 
 function clearExpiredBooking() {
-  if (!activeBooking || activeBooking.expiresAt > Date.now()) return false;
+  if (!activeBooking || activeBooking.confirmed || activeBooking.expiresAt > Date.now()) return false;
   activeBooking = null;
   localStorage.removeItem('malabar_table_booking');
   return true;
@@ -617,10 +617,11 @@ function renderBookingDetails() {
     return;
   }
   el.classList.remove('hidden');
+  const confirmed = Boolean(activeBooking.confirmed);
   el.innerHTML = `
     <div class="booking-summary-head">
-      <strong>Table booking confirmed</strong>
-      <span class="booking-status">Active</span>
+      <strong>${confirmed ? 'Table booking confirmed' : 'Table hold active'}</strong>
+      <span class="booking-status">${confirmed ? 'Confirmed' : 'Awaiting confirmation'}</span>
     </div>
     <div class="booking-summary-grid">
       <span>Table <strong>${activeBooking.tableName}</strong></span>
@@ -628,8 +629,12 @@ function renderBookingDetails() {
       <span>${activeBooking.date}</span>
       <span>${activeBooking.time}</span>
     </div>
-    <div class="booking-expiry">Table hold expires in <strong>${formatBookingTimeRemaining()}</strong></div>
-    <button type="button" class="booking-cancel" onclick="cancelTableBooking()">Cancel booking</button>`;
+    ${confirmed ? '' : `<div class="booking-expiry">Confirm within <strong>${formatBookingTimeRemaining()}</strong></div>`}
+    <div class="booking-actions">
+      ${confirmed ? '' : '<button type="button" class="booking-action primary" onclick="confirmTableBooking()">Confirm booking</button>'}
+      <button type="button" class="booking-action" onclick="modifyTableBooking()">Modify booking</button>
+      <button type="button" class="booking-cancel" onclick="cancelTableBooking()">Cancel booking</button>
+    </div>`;
 }
 
 function renderTablesForBooking() {
@@ -815,7 +820,7 @@ function selectTable(id) {
 }
 
 function bookTable() {
-  if (activeBooking && activeBooking.expiresAt > Date.now()) {
+  if (activeBooking) {
     showToast('You already have an active table booking');
     return;
   }
@@ -834,6 +839,7 @@ function bookTable() {
     date,
     time,
     people,
+    confirmed: false,
     expiresAt: Date.now() + BOOKING_TIMEOUT_MS
   };
   localStorage.setItem('malabar_table_booking', JSON.stringify(activeBooking));
@@ -844,10 +850,38 @@ function bookTable() {
 
 function cancelTableBooking() {
   if (!activeBooking) return;
+  if (!confirm(`Cancel the booking for table ${activeBooking.tableName}?`)) return;
   activeBooking = null;
   localStorage.removeItem('malabar_table_booking');
   renderTablesForBooking();
   showToast('Table booking cancelled');
+}
+
+function modifyTableBooking() {
+  if (!activeBooking) return;
+  const booking = activeBooking;
+  const dateField = document.getElementById('bookingDate');
+  const timeField = document.getElementById('bookingTime');
+  const peopleField = document.getElementById('bookingPeople');
+  const peopleLabel = document.getElementById('bookingPeopleLabel');
+  if (dateField) dateField.value = booking.date;
+  if (timeField) timeField.value = booking.time;
+  if (peopleField) peopleField.value = booking.people;
+  if (peopleLabel) peopleLabel.textContent = booking.people;
+  selectedTableId = booking.tableId;
+  activeBooking = null;
+  localStorage.removeItem('malabar_table_booking');
+  renderTablesForBooking();
+  showToast('Update your booking details, then hold the table again');
+}
+
+function confirmTableBooking() {
+  if (!activeBooking || activeBooking.confirmed) return;
+  activeBooking.confirmed = true;
+  activeBooking.expiresAt = null;
+  localStorage.setItem('malabar_table_booking', JSON.stringify(activeBooking));
+  renderBookingDetails();
+  showToast(`Table ${activeBooking.tableName} booking confirmed`);
 }
 
 function editAddress(id) {

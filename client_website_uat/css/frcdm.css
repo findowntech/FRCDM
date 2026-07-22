@@ -594,7 +594,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .booking-summary-grid strong { color: var(--ink); }
 .booking-expiry { color: var(--muted); font-size: 12px; }
 .booking-expiry strong { color: var(--accent); }
-.booking-cancel { margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--accent); font-size: 12px; font-weight: 800; }
+.booking-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.booking-action, .booking-cancel {
+  padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface); color: var(--ink); font-size: 12px; font-weight: 800;
+}
+.booking-action.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+.booking-cancel { color: var(--accent); }
 .table-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .table-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: -2px 0 10px; }
 .table-legend span, .table-option small {
