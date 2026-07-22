@@ -188,12 +188,17 @@
           <div class="form-field" id="addressField"><label for="custAddress">Delivery Address</label><textarea id="custAddress" placeholder="House, street, landmark"></textarea></div>
           <div class="form-field" id="pickupTimeField" style="display:none">
             <label for="pickupTime">Pickup time</label>
-            <select id="pickupTime">
-              <option value="" selected disabled>Select a pickup time</option>
-              <option value="15–30 min">15–30 min</option>
-              <option value="30–45 min">30–45 min</option>
-              <option value="45–60 min">45–60 min</option>
-            </select>
+            <div class="custom-select" data-custom-select="pickupTime">
+              <input type="hidden" id="pickupTime" value="">
+              <button type="button" class="custom-select-trigger" id="pickupTimeTrigger" onclick="toggleCustomSelect('pickupTime')" aria-expanded="false" aria-controls="pickupTimeMenu">
+                <span id="pickupTimeLabel">Select a pickup time</span><span class="select-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="custom-select-menu" id="pickupTimeMenu" role="listbox">
+                <button type="button" role="option" onclick="selectCustomOption('pickupTime', '15–30 min')">15–30 min</button>
+                <button type="button" role="option" onclick="selectCustomOption('pickupTime', '30–45 min')">30–45 min</button>
+                <button type="button" role="option" onclick="selectCustomOption('pickupTime', '45–60 min')">45–60 min</button>
+              </div>
+            </div>
           </div>
           <div class="form-field">
             <label for="couponInput">Coupon Code</label>
@@ -367,10 +372,16 @@
           </div>
           <div class="menu-row">
             <div class="row-icon">🌐</div><div class="row-main"><div class="row-title">Language</div></div>
-            <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
-              <option value="en">English</option>
-              <option value="ml">മലയാളം</option>
-            </select>
+            <div class="custom-select compact" data-custom-select="langSelect">
+              <input type="hidden" id="langSelect" value="en">
+              <button type="button" class="custom-select-trigger" id="langSelectTrigger" onclick="toggleCustomSelect('langSelect')" aria-expanded="false" aria-controls="langSelectMenu">
+                <span id="langSelectLabel">English</span><span class="select-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="custom-select-menu" id="langSelectMenu" role="listbox">
+                <button type="button" role="option" onclick="selectCustomOption('langSelect', 'en', 'English')">English</button>
+                <button type="button" role="option" onclick="selectCustomOption('langSelect', 'ml', 'മലയാളം')">മലയാളം</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -425,7 +436,21 @@
             <div class="form-field"><label for="bookingDate">Date</label><input type="date" id="bookingDate"></div>
             <div class="form-field"><label for="bookingTime">Time</label><input type="time" id="bookingTime" value="19:30" min="10:00" max="22:00" step="900"></div>
           </div>
-          <div class="form-field"><label for="bookingPeople">Guests</label><select id="bookingPeople"><option>2</option><option>4</option><option>6</option><option>8</option></select></div>
+          <div class="form-field">
+            <label for="bookingPeople">Guests</label>
+            <div class="custom-select" data-custom-select="bookingPeople">
+              <input type="hidden" id="bookingPeople" value="2">
+              <button type="button" class="custom-select-trigger" id="bookingPeopleTrigger" onclick="toggleCustomSelect('bookingPeople')" aria-expanded="false" aria-controls="bookingPeopleMenu">
+                <span id="bookingPeopleLabel">2</span><span class="select-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="custom-select-menu option-grid" id="bookingPeopleMenu" role="listbox">
+                <button type="button" role="option" onclick="selectCustomOption('bookingPeople', '2')">2</button>
+                <button type="button" role="option" onclick="selectCustomOption('bookingPeople', '4')">4</button>
+                <button type="button" role="option" onclick="selectCustomOption('bookingPeople', '6')">6</button>
+                <button type="button" role="option" onclick="selectCustomOption('bookingPeople', '8')">8</button>
+              </div>
+            </div>
+          </div>
           <div class="form-field">
             <label>Select Table</label>
             <div class="table-legend" aria-label="Table availability legend">

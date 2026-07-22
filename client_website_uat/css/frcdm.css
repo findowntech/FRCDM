@@ -510,6 +510,29 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .form-field input[type="date"], .form-field input[type="time"] { min-height: 48px; color-scheme: light; }
 [data-theme="dark"] .form-field input[type="date"], [data-theme="dark"] .form-field input[type="time"] { color-scheme: dark; }
 .booking-date-time { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.custom-select { position: relative; width: 100%; }
+.custom-select-trigger {
+  width: 100%; min-height: 48px; padding: 12px 13px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--bg); color: var(--ink); font-size: 16px; text-align: left;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.select-chevron { color: var(--muted); font-size: 18px; line-height: 1; transition: transform 0.2s; }
+.custom-select.is-open .select-chevron { transform: rotate(180deg); }
+.custom-select-menu {
+  display: none; grid-template-columns: 1fr; gap: 6px; margin-top: 8px; padding: 8px;
+  border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2);
+}
+.custom-select.is-open .custom-select-menu { display: grid; }
+.custom-select-menu button {
+  min-height: 42px; padding: 10px 12px; border: 0; border-radius: 10px;
+  background: var(--surface); color: var(--ink); text-align: left; font-weight: 700;
+}
+.custom-select-menu button:hover, .custom-select-menu button:focus-visible { background: rgba(255, 90, 54, 0.1); color: var(--accent); }
+.custom-select-menu.option-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.custom-select-menu.option-grid button { text-align: center; }
+.custom-select.compact { width: min(144px, 48vw); }
+.custom-select.compact .custom-select-trigger { min-height: 36px; padding: 7px 10px; border-radius: 10px; font-size: 12px; }
+.custom-select.compact .custom-select-menu { position: absolute; z-index: 2; width: inherit; min-width: 144px; right: 0; }
 .segmented, .fulfil-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
 .segment, .fulfil-opt {
   border: 1px solid var(--line); background: var(--bg); padding: 12px; border-radius: 14px;

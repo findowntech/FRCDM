@@ -843,6 +843,32 @@ function submitReview() {
   closeSheet();
 }
 
+function closeCustomSelects(exceptId = '') {
+  document.querySelectorAll('[data-custom-select]').forEach((select) => {
+    if (select.dataset.customSelect === exceptId) return;
+    select.classList.remove('is-open');
+    select.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function toggleCustomSelect(id) {
+  const select = document.querySelector(`[data-custom-select="${id}"]`);
+  if (!select) return;
+  const shouldOpen = !select.classList.contains('is-open');
+  closeCustomSelects(id);
+  select.classList.toggle('is-open', shouldOpen);
+  select.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', String(shouldOpen));
+}
+
+function selectCustomOption(id, value, label = value) {
+  const field = document.getElementById(id);
+  const labelEl = document.getElementById(`${id}Label`);
+  if (field) field.value = value;
+  if (labelEl) labelEl.textContent = label;
+  closeCustomSelects();
+  if (id === 'langSelect') changeLang(value);
+}
+
 function toggleDarkMode() {
   const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   document.documentElement.dataset.theme = next;
@@ -955,6 +981,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSheetDismiss();
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && document.getElementById('sheet')?.classList.contains('show')) closeSheet();
+  });
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('[data-custom-select]')) closeCustomSelects();
   });
 
   document.querySelectorAll('.variant-pill').forEach((pill) => {
