@@ -2,7 +2,11 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - client_website_uat/**
+      - .github/workflows/deploy-pages.yml
   workflow_dispatch:
 
 permissions:
@@ -12,26 +16,23 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Pages
+      - name: Configure Pages
         uses: actions/configure-pages@v5
-
-      - name: Upload artifact
+      - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: FRCDM Website
-
-      - name: Deploy to GitHub Pages
+          path: ./client_website_uat
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
