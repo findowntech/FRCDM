@@ -436,7 +436,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 /* Detail */
 .detail-hero, .detail-img { height: 220px; border-radius: 22px; overflow: hidden; margin-bottom: 16px; }
 .detail-img { position: relative; }
-.detail-hero img, .detail-img img { width: 100%; height: 100%; object-fit: cover; }
+.detail-hero > img, .detail-img > img { width: 100%; height: 100%; object-fit: cover; }
 .detail-title { font-size: 22px; margin: 0 0 6px; }
 .detail-desc { color: var(--muted); line-height: 1.6; margin: 0 0 14px; font-size: 14px; }
 .detail-price { font-size: 20px; font-weight: 800; color: var(--accent-2); margin-bottom: 4px; }
