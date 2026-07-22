@@ -461,6 +461,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .fav-icon-toggle { width: 20px; height: 20px; }
 .fav-icon-mini { width: 13px; height: 13px; }
 .fav-icon-row { width: 18px; height: 18px; }
+.notification-icon { display: block; object-fit: contain; pointer-events: none; }
+.notification-icon-header { width: 20px; height: 20px; }
 .fav-mini.active, .favourite-toggle.active, .icon-btn.active { background: transparent; }
 .detail-fav {
   position: absolute; right: 12px; bottom: 12px; z-index: 1; width: 36px; height: 36px;

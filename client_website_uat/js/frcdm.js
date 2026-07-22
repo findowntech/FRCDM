@@ -112,6 +112,7 @@ let selectedTableId = null;
 let currentSearch = '';
 let currentSlide = 0;
 const BOOKING_TIMEOUT_MS = 5 * 60 * 1000;
+let notificationsRead = localStorage.getItem('malabar_notifications_read') === 'true';
 let activeBooking = (() => {
   try {
     return JSON.parse(localStorage.getItem('malabar_table_booking') || 'null');
@@ -129,6 +130,10 @@ const FAV_ICONS = {
   empty: 'assets/icons/empty-favorite-icon.png',
   filled: 'assets/icons/filled-favorite-icon.png'
 };
+const NOTIFICATION_ICONS = {
+  empty: 'assets/icons/empty-notification-icon.png',
+  filled: 'assets/icons/filled-notification-icon.png'
+};
 
 function favIconImg(filled, extraClass = '') {
   const src = filled ? FAV_ICONS.filled : FAV_ICONS.empty;
@@ -145,6 +150,16 @@ function setFavButtonIcon(btn, filled) {
   btn.innerHTML = favIconImg(filled, extraClass);
   btn.classList.toggle('active', filled);
   btn.setAttribute('aria-label', filled ? 'Remove from favourites' : 'Add to favourites');
+}
+
+function updateNotificationUI() {
+  const btn = document.getElementById('notifIcon');
+  if (!btn) return;
+  const filled = !notificationsRead;
+  const src = filled ? NOTIFICATION_ICONS.filled : NOTIFICATION_ICONS.empty;
+  const label = filled ? 'Notifications: unread messages' : 'Notifications';
+  btn.innerHTML = `<img src="${src}" class="notification-icon notification-icon-header" alt="${label}" width="20" height="20">`;
+  btn.setAttribute('aria-label', label);
 }
 
 function cartCount() { return Object.values(cart).reduce((a, b) => a + b, 0); }
@@ -536,6 +551,9 @@ function renderFavourites() {
 function renderNotifications() {
   const el = document.getElementById('notifList');
   if (!el) return;
+  notificationsRead = true;
+  localStorage.setItem('malabar_notifications_read', 'true');
+  updateNotificationUI();
   el.innerHTML = NOTIFICATIONS.map((n) => `
     <div class="notif-item">
       <div class="icon">${n.icon}</div>
@@ -1066,6 +1084,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCategorySections();
   updateCartUI();
   updateFavUI();
+  updateNotificationUI();
 
   if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.dataset.theme = 'dark';
