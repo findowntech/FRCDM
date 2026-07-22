@@ -186,6 +186,15 @@
           <div class="form-field"><label for="custName">Your Name</label><input id="custName" placeholder="Enter your name"></div>
           <div class="form-field"><label for="custPhone">Phone</label><input id="custPhone" placeholder="98470 12345"></div>
           <div class="form-field" id="addressField"><label for="custAddress">Delivery Address</label><textarea id="custAddress" placeholder="House, street, landmark"></textarea></div>
+          <div class="form-field" id="pickupTimeField" style="display:none">
+            <label for="pickupTime">Pickup time</label>
+            <select id="pickupTime">
+              <option value="" selected disabled>Select a pickup time</option>
+              <option value="15–30 min">15–30 min</option>
+              <option value="30–45 min">30–45 min</option>
+              <option value="45–60 min">45–60 min</option>
+            </select>
+          </div>
           <div class="form-field">
             <label for="couponInput">Coupon Code</label>
             <div class="coupon">
@@ -238,15 +247,15 @@
       <div id="detailView" style="display:none;">
         <div class="sheet-head">
           <h2 id="detailTitle">Dish Details</h2>
-          <div>
-            <button type="button" class="favourite-toggle" id="detailFavBtn" onclick="toggleFavourite(currentDetailItem?.id)" aria-label="Add to favourites">
-              <img src="assets/icons/empty-favorite-icon.png" class="fav-icon fav-icon-toggle" alt="Add to favourites" width="22" height="22">
-            </button>
-            <button type="button" class="close" onclick="closeSheet()">×</button>
-          </div>
+          <button type="button" class="close" onclick="closeSheet()">×</button>
         </div>
         <div class="sheet-body">
-          <div class="detail-img"><img id="detailImg" src="" alt=""></div>
+          <div class="detail-img">
+            <img id="detailImg" src="" alt="">
+            <button type="button" class="favourite-toggle detail-fav" id="detailFavBtn" onclick="toggleFavourite(currentDetailItem?.id)" aria-label="Add to favourites">
+              <img src="assets/icons/empty-favorite-icon.png" class="fav-icon fav-icon-toggle" alt="Add to favourites" width="20" height="20">
+            </button>
+          </div>
           <div class="detail-title" id="detailName"></div>
           <div class="detail-desc" id="detailDesc"></div>
           <div class="detail-price" id="detailPrice">₹0</div>
@@ -412,10 +421,18 @@
       <div id="tableBookingView" style="display:none;">
         <div class="sheet-head"><h2>Book a Table</h2><button type="button" class="close" onclick="closeSheet()">×</button></div>
         <div class="sheet-body">
-          <div class="form-field"><label for="bookingDate">Date</label><input type="date" id="bookingDate"></div>
-          <div class="form-field"><label for="bookingTime">Time</label><input type="time" id="bookingTime" value="19:30"></div>
+          <div class="booking-date-time">
+            <div class="form-field"><label for="bookingDate">Date</label><input type="date" id="bookingDate"></div>
+            <div class="form-field"><label for="bookingTime">Time</label><input type="time" id="bookingTime" value="19:30" min="10:00" max="22:00" step="900"></div>
+          </div>
           <div class="form-field"><label for="bookingPeople">Guests</label><select id="bookingPeople"><option>2</option><option>4</option><option>6</option><option>8</option></select></div>
-          <div class="form-field"><label>Select Table</label><div class="table-grid" id="tableSelectGrid"></div></div>
+          <div class="form-field">
+            <label>Select Table</label>
+            <div class="table-legend" aria-label="Table availability legend">
+              <span class="available">Available</span><span class="occupied">Occupied</span><span class="reserved">Reserved</span>
+            </div>
+            <div class="table-grid" id="tableSelectGrid"></div>
+          </div>
           <div class="form-field"><label for="bookingRequests">Special Requests</label><textarea id="bookingRequests" placeholder="Any special occasion?"></textarea></div>
           <button type="button" class="cta" onclick="bookTable()">Confirm Booking</button>
         </div>

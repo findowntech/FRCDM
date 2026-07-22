@@ -585,9 +585,9 @@ function renderTablesForBooking() {
   const el = document.getElementById('tableSelectGrid');
   if (!el) return;
   el.innerHTML = TABLES.map((t) => `
-    <button type="button" class="table-option ${t.status !== 'available' ? 'reserved' : ''} ${selectedTableId === t.id ? 'selected' : ''}"
+    <button type="button" class="table-option status-${t.status} ${selectedTableId === t.id ? 'selected' : ''}"
       ${t.status === 'available' ? `onclick="selectTable(${t.id})"` : 'disabled'}>
-      ${t.name}<br><small>${t.status}</small>
+      <strong>${t.name}</strong><small>${t.status}</small>
     </button>
   `).join('');
 }
@@ -641,7 +641,10 @@ function openSheet(view) {
 function closeSheet() {
   document.body.classList.remove('no-scroll');
   document.getElementById('overlay').classList.remove('show');
-  document.getElementById('sheet').classList.remove('show');
+  const sheet = document.getElementById('sheet');
+  sheet.style.removeProperty('transform');
+  sheet.style.removeProperty('transition');
+  sheet.classList.remove('show');
 }
 
 function showCheckout() {
@@ -652,8 +655,10 @@ function setFulfil(type) {
   fulfilType = type;
   document.getElementById('optDelivery')?.classList.toggle('active', type === 'delivery');
   document.getElementById('optPickup')?.classList.toggle('active', type === 'pickup');
-  const a = document.getElementById('addressField');
-  if (a) a.style.display = type === 'pickup' ? 'none' : 'block';
+  const addressField = document.getElementById('addressField');
+  const pickupTimeField = document.getElementById('pickupTimeField');
+  if (addressField) addressField.style.display = type === 'pickup' ? 'none' : 'block';
+  if (pickupTimeField) pickupTimeField.style.display = type === 'pickup' ? 'block' : 'none';
 }
 
 function openDetail(id) {
@@ -717,13 +722,21 @@ function placeOrder() {
   const name = document.getElementById('custName')?.value.trim() || 'Guest';
   const phone = document.getElementById('custPhone')?.value.trim() || '';
   const address = document.getElementById('custAddress')?.value.trim() || '';
+  const pickupTime = document.getElementById('pickupTime')?.value || '';
+  if (fulfilType === 'pickup' && !pickupTime) {
+    showToast('Please select a pickup time');
+    return;
+  }
   const total = cartTotal() - discountAmount();
   const orderNo = 'ORD-2607-' + Math.floor(1000 + Math.random() * 9000);
   const lines = Object.entries(cart).map(([id, q]) => {
     const it = findItem(+id);
     return `${q} x ${it.name} - ${money(it.price * q)}`;
   }).join('\n');
-  const msg = `Hi Malabar Table, confirming order ${orderNo}\n\n${lines}\n\nTotal: ${money(total)}\nName: ${name}${phone ? '\nPhone: ' + phone : ''}\n${fulfilType === 'delivery' ? 'Deliver to: ' + address : 'Pickup at store'}`;
+  const fulfilment = fulfilType === 'delivery'
+    ? 'Deliver to: ' + address
+    : `Pickup at store in ${pickupTime}`;
+  const msg = `Hi Malabar Table, confirming order ${orderNo}\n\n${lines}\n\nTotal: ${money(total)}\nName: ${name}${phone ? '\nPhone: ' + phone : ''}\n${fulfilment}`;
   document.getElementById('waLink').href = 'https://wa.me/919847000000?text=' + encodeURIComponent(msg);
   document.getElementById('orderNo').textContent = orderNo;
   document.getElementById('trackOrderId').textContent = orderNo.slice(-4);
@@ -752,9 +765,15 @@ function bookTable() {
   const date = document.getElementById('bookingDate')?.value;
   const time = document.getElementById('bookingTime')?.value;
   const people = document.getElementById('bookingPeople')?.value;
-  const table = TABLES.find((t) => t.id === selectedTableId)?.name || '';
-  showToast(`Table ${table} booked for ${people} on ${date} at ${time}`);
-  closeSheet();
+  const table = TABLES.find((t) => t.id === selectedTableId);
+  if (!date || !time || !table) {
+    showToast('Please select a date, time, and table');
+    return;
+  }
+  table.status = 'reserved';
+  selectedTableId = null;
+  renderTablesForBooking();
+  showToast(`Table ${table.name} reserved for ${people} on ${date} at ${time}`);
 }
 
 function editAddress(id) {
@@ -851,6 +870,59 @@ function showSlide(i) {
 }
 function nextSlide() { showSlide((currentSlide + 1) % 3); }
 
+function setupHeroSwipe() {
+  const hero = document.getElementById('hero');
+  if (!hero) return;
+  let startX = null;
+  hero.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse') return;
+    startX = event.clientX;
+  });
+  hero.addEventListener('pointerup', (event) => {
+    if (startX === null) return;
+    const deltaX = event.clientX - startX;
+    startX = null;
+    if (Math.abs(deltaX) < 50) return;
+    const slideCount = document.querySelectorAll('.hero-slide').length;
+    showSlide((currentSlide + (deltaX < 0 ? 1 : -1) + slideCount) % slideCount);
+  });
+  hero.addEventListener('pointercancel', () => { startX = null; });
+}
+
+function setupSheetDismiss() {
+  const sheet = document.getElementById('sheet');
+  if (!sheet) return;
+  let startY = 0;
+  let dragDistance = 0;
+  let dragging = false;
+
+  sheet.addEventListener('pointerdown', (event) => {
+    if (event.target.closest('button, input, select, textarea')) return;
+    if (!event.target.closest('.handle, .sheet-head')) return;
+    startY = event.clientY;
+    dragDistance = 0;
+    dragging = true;
+    sheet.setPointerCapture?.(event.pointerId);
+    sheet.style.transition = 'none';
+  });
+
+  sheet.addEventListener('pointermove', (event) => {
+    if (!dragging) return;
+    dragDistance = Math.max(0, event.clientY - startY);
+    if (dragDistance > 0) sheet.style.transform = `translate(-50%, ${dragDistance}px)`;
+  });
+
+  const finishDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.removeProperty('transition');
+    if (dragDistance > 96) closeSheet();
+    else sheet.style.removeProperty('transform');
+  };
+  sheet.addEventListener('pointerup', finishDrag);
+  sheet.addEventListener('pointercancel', finishDrag);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderOffers();
   renderBento();
@@ -868,7 +940,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const bookingDate = document.getElementById('bookingDate');
   if (bookingDate) {
-    bookingDate.value = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    bookingDate.value = tomorrow;
+    bookingDate.min = tomorrow;
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -877,6 +951,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   setInterval(nextSlide, 5000);
+  setupHeroSwipe();
+  setupSheetDismiss();
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.getElementById('sheet')?.classList.contains('show')) closeSheet();
+  });
 
   document.querySelectorAll('.variant-pill').forEach((pill) => {
     pill.addEventListener('click', () => {
