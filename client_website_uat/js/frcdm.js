@@ -540,10 +540,10 @@ function renderFavourites() {
     const it = findItem(id);
     if (!it) return '';
     return `
-      <div class="fav-item">
+      <div class="fav-item" onclick="openDetail(${it.id})" role="button" tabindex="0">
         <img src="${img('item-' + it.id, 120, 120)}" alt="${it.name}">
         <div class="cart-info"><div class="cart-name">${it.name}</div><div class="cart-price">${money(it.price)}</div></div>
-        <button type="button" class="fav-remove" onclick="toggleFavourite(${it.id})">✕</button>
+        <button type="button" class="fav-remove" onclick="event.stopPropagation();toggleFavourite(${it.id})">✕</button>
       </div>`;
   }).join('');
 }
@@ -676,11 +676,19 @@ const SHEET_VIEWS = [
   'bestsellersView', 'menuAllView', 'offersView', 'tableBookingView', 'writeReviewView'
 ];
 
-function openSheet(view) {
-  document.body.classList.add('no-scroll');
-  document.getElementById('overlay').classList.add('show');
-  document.getElementById('sheet').classList.add('show');
+const SHEET_VIEW_MAP = {
+  cart: 'cartView', checkout: 'checkoutView', confirm: 'confirmView', track: 'trackView',
+  detail: 'detailView', favourites: 'favouritesView', notifications: 'notificationsView',
+  profile: 'profileView', contact: 'contactView', qr: 'qrView', orders: 'ordersView',
+  addresses: 'addressesView', payments: 'paymentsView', settings: 'settingsView',
+  restaurant: 'restaurantView', bestsellers: 'bestsellersView', menuall: 'menuAllView',
+  offers: 'offersView', tableBooking: 'tableBookingView', writeReview: 'writeReviewView'
+};
 
+let sheetStack = [];
+let currentSheetView = null;
+
+function prepareSheetView(view) {
   if (view === 'detail' && currentDetailItem) populateDetail(currentDetailItem);
   else if (view === 'cart') updateCartUI();
   else if (view === 'checkout') updateCartUI();
@@ -695,27 +703,45 @@ function openSheet(view) {
   else if (view === 'tableBooking') renderTablesForBooking();
   else if (view === 'writeReview') resetReviewStars();
 
-  const map = {
-    cart: 'cartView', checkout: 'checkoutView', confirm: 'confirmView', track: 'trackView',
-    detail: 'detailView', favourites: 'favouritesView', notifications: 'notificationsView',
-    profile: 'profileView', contact: 'contactView', qr: 'qrView', orders: 'ordersView',
-    addresses: 'addressesView', payments: 'paymentsView', settings: 'settingsView',
-    restaurant: 'restaurantView', bestsellers: 'bestsellersView', menuall: 'menuAllView',
-    offers: 'offersView', tableBooking: 'tableBookingView', writeReview: 'writeReviewView'
-  };
-
   SHEET_VIEWS.forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
-  const target = document.getElementById(map[view]);
+  const target = document.getElementById(SHEET_VIEW_MAP[view]);
   if (target) target.style.display = 'flex';
   target?.style.setProperty('flex-direction', 'column');
   target?.style.setProperty('height', '100%');
   target?.style.setProperty('min-height', '0');
+  currentSheetView = view;
+}
+
+function openSheet(view) {
+  const sheet = document.getElementById('sheet');
+  const sheetOpen = sheet.classList.contains('show');
+  if (sheetOpen && currentSheetView && currentSheetView !== view) {
+    sheetStack.push(currentSheetView);
+  } else if (!sheetOpen) {
+    sheetStack = [];
+  }
+
+  document.body.classList.add('no-scroll');
+  document.getElementById('overlay').classList.add('show');
+  sheet.classList.add('show');
+  prepareSheetView(view);
 }
 
 function closeSheet() {
+  if (sheetStack.length) {
+    const previous = sheetStack.pop();
+    prepareSheetView(previous);
+    return;
+  }
+  dismissSheet();
+}
+
+function dismissSheet() {
+  sheetStack = [];
+  currentSheetView = null;
   document.body.classList.remove('no-scroll');
   document.getElementById('overlay').classList.remove('show');
   const sheet = document.getElementById('sheet');
@@ -946,7 +972,7 @@ function deleteAddress(id) {
 }
 
 function openWriteReview() {
-  closeSheet();
+  dismissSheet();
   setTimeout(() => openSheet('writeReview'), 280);
 }
 
@@ -1068,11 +1094,64 @@ function setupSheetDismiss() {
     if (!dragging) return;
     dragging = false;
     sheet.style.removeProperty('transition');
-    if (dragDistance > 96) closeSheet();
+    if (dragDistance > 96) dismissSheet();
     else sheet.style.removeProperty('transform');
   };
   sheet.addEventListener('pointerup', finishDrag);
   sheet.addEventListener('pointercancel', finishDrag);
+}
+
+function setupHorizontalDragScroll(selector) {
+  const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+  if (!el) return;
+  let startX = 0;
+  let startY = 0;
+  let startScroll = 0;
+  let dragging = false;
+  let axis = null;
+  let moved = false;
+
+  el.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    if (event.target.closest('button, a, input, select, textarea')) return;
+    dragging = true;
+    axis = null;
+    moved = false;
+    startX = event.clientX;
+    startY = event.clientY;
+    startScroll = el.scrollLeft;
+  });
+
+  el.addEventListener('pointermove', (event) => {
+    if (!dragging) return;
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+    if (!axis) {
+      if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
+      axis = Math.abs(deltaX) > Math.abs(deltaY) ? 'x' : 'y';
+      if (axis === 'x') el.setPointerCapture?.(event.pointerId);
+      else {
+        dragging = false;
+        return;
+      }
+    }
+    if (axis !== 'x') return;
+    moved = true;
+    el.scrollLeft = startScroll - deltaX;
+    event.preventDefault();
+  }, { passive: false });
+
+  const endDrag = () => {
+    dragging = false;
+    axis = null;
+  };
+  el.addEventListener('pointerup', endDrag);
+  el.addEventListener('pointercancel', endDrag);
+  el.addEventListener('click', (event) => {
+    if (!moved) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1085,6 +1164,8 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartUI();
   updateFavUI();
   updateNotificationUI();
+  setupHorizontalDragScroll('#offersCarousel');
+  setupHorizontalDragScroll('#bestRow');
 
   if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.dataset.theme = 'dark';

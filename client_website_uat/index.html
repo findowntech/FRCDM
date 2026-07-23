@@ -162,7 +162,7 @@
 
   <div id="menuAnchor"></div>
 
-  <div class="overlay" id="overlay" onclick="closeSheet()"></div>
+  <div class="overlay" id="overlay" onclick="dismissSheet()"></div>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true">
     <div class="handle"></div>
     <div id="sheetContent" style="display:flex;flex-direction:column;height:100%;min-height:0;">
@@ -179,7 +179,7 @@
       </div>
 
       <div id="checkoutView" style="display:none;">
-        <div class="sheet-head"><h2>Checkout</h2><button type="button" class="close" onclick="openSheet('cart')">‹</button></div>
+        <div class="sheet-head"><h2>Checkout</h2><button type="button" class="close" onclick="closeSheet()">‹</button></div>
         <div class="sheet-body">
           <div class="fulfil-toggle">
             <button type="button" class="fulfil-opt active" id="optDelivery" onclick="setFulfil('delivery')">🛵 Delivery</button>
