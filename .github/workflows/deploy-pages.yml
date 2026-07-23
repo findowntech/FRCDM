@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - client_website_uat/**
+      - client_dashboard_uat/**
       - .github/workflows/deploy-pages.yml
   workflow_dispatch:
 
