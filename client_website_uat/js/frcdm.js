@@ -222,22 +222,10 @@ function updateNotificationUI() {
 function updateCartIcons(count) {
   const filled = count > 0;
   const src = filled ? CART_ICONS.filled : CART_ICONS.empty;
-  const label = filled ? `Cart: ${count} item${count === 1 ? '' : 's'}` : 'Cart';
-
-  const headerBtn = document.getElementById('cartIcon');
-  if (headerBtn) {
-    const img = headerBtn.querySelector('.cart-icon');
-    if (img) {
-      img.src = src;
-      img.alt = label;
-    }
-    headerBtn.setAttribute('aria-label', label);
-  }
-
   const navImg = document.querySelector('#cartNavIcon .cart-icon');
   if (navImg) {
     navImg.src = src;
-    navImg.alt = 'Order';
+    navImg.alt = filled ? `Order: ${count} item${count === 1 ? '' : 's'}` : 'Order';
   }
 }
 
@@ -488,8 +476,9 @@ function updateCartUI() {
   const disc = discountAmount();
   const total = sub - disc;
 
-  ['topBadge', 'tabBadge'].forEach((id) => {
+  ['tabBadge'].forEach((id) => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.textContent = count;
     el.classList.toggle('hidden', !count);
   });
