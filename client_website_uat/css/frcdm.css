@@ -395,7 +395,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   border: 0; background: transparent; color: var(--muted);
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   font-size: 11px; font-weight: 700; min-width: 62px; position: relative;
-  opacity: 0.42;
+  opacity: 0.72;
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 .nav-item .nav-icon {
@@ -409,8 +409,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .nav-item:not(.active) .nav-icon-img,
 .nav-item:not(.active) .cart-icon-nav {
-  filter: grayscale(0.35) brightness(1.05);
-  opacity: 0.75;
+  filter: grayscale(0.15) brightness(1.02);
+  opacity: 0.9;
 }
 .nav-item.active {
   color: var(--accent);
