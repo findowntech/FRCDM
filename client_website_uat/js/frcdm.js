@@ -187,10 +187,6 @@ const NOTIFICATION_ICONS = {
   empty: 'assets/icons/empty-notification-icon.png',
   filled: 'assets/icons/filled-notification-icon.png'
 };
-const CART_ICONS = {
-  empty: 'assets/icons/empty-cart-icon.png',
-  filled: 'assets/icons/filled-cart-icon.png'
-};
 
 function favIconImg(filled, extraClass = '') {
   const src = filled ? FAV_ICONS.filled : FAV_ICONS.empty;
@@ -217,16 +213,6 @@ function updateNotificationUI() {
   const label = filled ? 'Notifications: unread messages' : 'Notifications';
   btn.innerHTML = `<img src="${src}" class="notification-icon notification-icon-header" alt="${label}" width="20" height="20">`;
   btn.setAttribute('aria-label', label);
-}
-
-function updateCartIcons(count) {
-  const filled = count > 0;
-  const src = filled ? CART_ICONS.filled : CART_ICONS.empty;
-  const navImg = document.querySelector('#cartNavIcon .cart-icon');
-  if (navImg) {
-    navImg.src = src;
-    navImg.alt = filled ? `Order: ${count} item${count === 1 ? '' : 's'}` : 'Order';
-  }
 }
 
 function cartCount() { return Object.values(cart).reduce((a, b) => a + b, 0); }
@@ -482,7 +468,6 @@ function updateCartUI() {
     el.textContent = count;
     el.classList.toggle('hidden', !count);
   });
-  updateCartIcons(count);
 
   document.getElementById('cartCountLabel').textContent = `${count} item${count === 1 ? '' : 's'}`;
   document.getElementById('desktopSubtotal').textContent = money(sub);
