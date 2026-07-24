@@ -121,7 +121,60 @@ let activeBooking = (() => {
   }
 })();
 
-const img = (seed, w = 400, h = 400) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
+/* Curated Unsplash food stock (Kerala / South Indian themed where possible) */
+const FOOD_PHOTOS = {
+  'kerala-feast': 'photo-1742281257687-092746ad6021',
+  'seafood-feast': 'photo-1750271328082-22490577fbb5',
+  'palada-dessert': 'photo-1488477181946-6428a0291777',
+  'restaurant-cover': 'photo-1517248135467-4c7edcad34c4',
+  sadyatile: 'photo-1742281257687-092746ad6021',
+  curriestile: 'photo-1565557623262-b51c2513a641',
+  breadstile: 'photo-1668236543090-82eba5ee5976',
+  sweetstile: 'photo-1488477181946-6428a0291777',
+  beveragestile: 'photo-1571934811356-5cc061b6821f',
+  starterstile: 'photo-1626082927389-6cd097cdc6ec'
+};
+
+const ITEM_PHOTOS = {
+  1: 'photo-1742281257687-092746ad6021',
+  2: 'photo-1567188040759-fb8a883dc6d8',
+  11: 'photo-1455619452474-d2be8b1e70cd',
+  12: 'photo-1596040033229-a9821ebd058d',
+  20: 'photo-1540189549336-e6e99c3679fe',
+  3: 'photo-1756741987051-a6a38f28838b',
+  4: 'photo-1546833999-b9f581a1996d',
+  5: 'photo-1476224203421-9ac39bcb3327',
+  6: 'photo-1565680018434-b513d5e5fd47',
+  13: 'photo-1604908176997-125f25cc6f3d',
+  14: 'photo-1588168333986-5078d3ae3976',
+  19: 'photo-1414235077428-338989a2e8c0',
+  7: 'photo-1601050690597-df0568f70950',
+  8: 'photo-1668236543090-82eba5ee5976',
+  15: 'photo-1589301760014-d929f3979dbc',
+  16: 'photo-1743615467204-8fdaa85ff2db',
+  9: 'photo-1488477181946-6428a0291777',
+  10: 'photo-1571934811356-5cc061b6821f',
+  17: 'photo-1550258987-190a2d41a8ba',
+  18: 'photo-1571934811356-5cc061b6821f',
+  21: 'photo-1497534446932-c925b458314e',
+  22: 'photo-1544145945-f90425340c7e',
+  23: 'photo-1534353473418-4cfa6c56fd38',
+  24: 'photo-1525385133512-2f3bdd039054',
+  25: 'photo-1626082927389-6cd097cdc6ec',
+  26: 'photo-1628294896516-344152572ee8',
+  27: 'photo-1519708227418-c8fd9a32b7a2'
+};
+
+function foodUrl(photoId, w = 400, h = 400) {
+  return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+}
+function img(key, w = 400, h = 400) {
+  return foodUrl(FOOD_PHOTOS[key] || FOOD_PHOTOS['kerala-feast'], w, h);
+}
+function itemImg(id, w = 400, h = 400) {
+  return foodUrl(ITEM_PHOTOS[id] || FOOD_PHOTOS.curriestile, w, h);
+}
+
 const findItem = (id) => ITEMS.find((x) => x.id === id);
 const money = (n) => '₹' + Math.round(n);
 const isFavourite = (id) => favourites.includes(id);
@@ -294,7 +347,7 @@ function renderBest() {
     <div class="best-card" onclick="openDetail(${it.id})">
       <div class="best-photo-wrap">
         <div class="best-photo">
-          <img src="${img('item' + it.id, 220, 220)}" alt="${it.name}" loading="lazy">
+          <img src="${itemImg(it.id, 220, 220)}" alt="${it.name}" loading="lazy">
         </div>
         <button type="button" class="best-add" aria-label="Add ${it.name}" onclick="event.stopPropagation();addItem(${it.id})">+</button>
       </div>
@@ -311,7 +364,7 @@ function renderBestsellerGrid() {
     <div class="best-item" onclick="openDetail(${it.id})">
       <div class="best-photo-wrap">
         <div class="best-photo">
-          <img src="${img('item' + it.id, 220, 220)}" alt="${it.name}" loading="lazy">
+          <img src="${itemImg(it.id, 220, 220)}" alt="${it.name}" loading="lazy">
         </div>
         <button type="button" class="best-add" aria-label="Add ${it.name}" onclick="event.stopPropagation();addItem(${it.id})">+</button>
       </div>
@@ -335,7 +388,7 @@ function itemCardHtml(it) {
   return `
     <article class="item-card" onclick="openDetail(${it.id})">
       <div class="item-photo">
-        <img src="${img('item-' + it.id, 200, 200)}" alt="${it.name}" loading="lazy">
+        <img src="${itemImg(it.id, 200, 200)}" alt="${it.name}" loading="lazy">
         <span class="veg ${it.veg ? '' : 'nonveg'}"><i></i></span>
         <button type="button" class="fav-mini${fav ? ' active' : ''}"
           onclick="event.stopPropagation();toggleFavourite(${it.id})">${favIconImg(fav, 'fav-icon-mini')}</button>
@@ -390,7 +443,7 @@ function renderMenuAll() {
   if (!el) return;
   el.innerHTML = ITEMS.map((it) => `
     <div class="menu-all-item" onclick="openDetail(${it.id})">
-      <img src="${img('item-' + it.id, 120, 120)}" alt="${it.name}">
+      <img src="${itemImg(it.id, 120, 120)}" alt="${it.name}">
       <div class="info">
         <div class="item-name">${it.name}</div>
         <span class="cat-tag">${CATEGORIES.find((c) => c.key === it.cat)?.name || it.cat}</span>
@@ -416,7 +469,7 @@ function renderCartLines(targetId) {
     const interactive = targetId === 'sheetCartLines';
     return `
       <div class="cart-line">
-        <img src="${img('item-' + id, 120, 120)}" alt="${it.name}">
+        <img src="${itemImg(+id, 120, 120)}" alt="${it.name}">
         <div class="cart-info">
           <div class="cart-name">${it.name}</div>
           <div class="cart-price">${interactive ? money(it.price) + ' each' : q + ' × ' + money(it.price)}</div>
@@ -568,7 +621,7 @@ function renderFavourites() {
     if (!it) return '';
     return `
       <div class="fav-item" onclick="openDetail(${it.id})" role="button" tabindex="0">
-        <img src="${img('item-' + it.id, 120, 120)}" alt="${it.name}">
+        <img src="${itemImg(it.id, 120, 120)}" alt="${it.name}">
         <div class="cart-info"><div class="cart-name">${it.name}</div><div class="cart-price">${money(it.price)}</div></div>
         <button type="button" class="fav-remove" onclick="event.stopPropagation();toggleFavourite(${it.id})">✕</button>
       </div>`;
@@ -825,7 +878,7 @@ function renderProductReviews() {
 }
 
 function populateDetail(it) {
-  document.getElementById('detailImg').src = img('item-' + it.id, 900, 700);
+  document.getElementById('detailImg').src = itemImg(it.id, 900, 700);
   document.getElementById('detailName').textContent = it.name;
   document.getElementById('detailDesc').textContent = it.desc;
   document.getElementById('detailPrice').textContent = money(it.price);
